@@ -1,0 +1,28 @@
+/* modalStyles.css */
+
+.ggx-modal-header {
+    background-color: #28a745; /* Green Bootstrap shade */
+    color: #fff;
+    border-bottom: none;
+  }
+  
+  .ggx-modal-body {
+    background-color: #f4fff7;
+  }
+  
+  .ggx-btn {
+    background-color: #2e7d32 !important; /* Dark green */
+    border: none;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .ggx-btn:hover {
+    background-color: #1b5e20 !important;
+  }
+  
+  .modal-footer {
+    background-color: #f4fff7;
+    border-top: none;
+  }
+  
