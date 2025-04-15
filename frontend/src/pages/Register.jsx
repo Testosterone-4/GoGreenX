@@ -1,9 +1,10 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {Modal, Button, Form} from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import "../assets/css/registerStyles.css";
+import { useGoogleLogin } from "@react-oauth/google";
 
-const AuthModals = ({show, handleClose}) => {
+const AuthModals = ({ show, handleClose }) => {
   const [signupData, setSignupData] = useState({
     name: "",
     address: "",
@@ -14,7 +15,7 @@ const AuthModals = ({show, handleClose}) => {
   });
 
   const handleSignupChange = (e) => {
-    setSignupData({...signupData, [e.target.name]: e.target.value});
+    setSignupData({ ...signupData, [e.target.name]: e.target.value });
   };
 
   const handleSignupSubmit = (e) => {
@@ -22,6 +23,15 @@ const AuthModals = ({show, handleClose}) => {
     console.log("Sign Up Data:", signupData);
     handleClose();
   };
+  const login = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      console.log("Google Sign Up Success:", tokenResponse);
+      handleClose();
+    },
+    onError: () => {
+      console.log("Google Sign Up Failed");
+    },
+  });
 
   return (
     <>
@@ -104,6 +114,19 @@ const AuthModals = ({show, handleClose}) => {
               Sign Up
             </Button>
           </Form>
+
+          <div className="text-center my-3">or</div>
+
+          <Button onClick={login} className="ggx-google-btn w-100 mt-2">
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google"
+              width="20"
+              height="20"
+              className="me-2"
+            />
+            Sign up with Google
+          </Button>
         </Modal.Body>
       </Modal>
     </>
