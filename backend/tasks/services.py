@@ -1,9 +1,11 @@
+import requests
 from datetime import datetime, timedelta
+from django.conf import settings
 from .models import Task
 from users.models import FitnessInput
 
 def generate_fitness_plan(fitness_input):
-    """Generate a weekly task plan based on user inputs."""
+    """Generate a weekly task plan using Hugging Face API."""
     user = fitness_input.user
     weight = fitness_input.weight
     height = fitness_input.height
@@ -11,68 +13,57 @@ def generate_fitness_plan(fitness_input):
     age = fitness_input.age
     goal = fitness_input.goal
 
-    # Calculate BMR and TDEE
-    if sex == 'male':
-        bmr = 10 * weight + 6.25 * height - 5 * age + 5
-    else:
-        bmr = 10 * weight + 6.25 * height - 5 * age - 161
-    tdee = bmr * 1.55  # Moderate activity
+    # Prepare prompt for AI
+    prompt = (
+        f"Generate a weekly fitness plan for a {sex} aged {age}, weighing {weight}kg, "
+        f"{height}cm tall, with the goal of {goal}. Return a JSON array of tasks, each with: "
+        f"'title' (e.g., 'Run 5km', 'Eat 50g protein'), 'category' ('exercise' or 'nutrition'), "
+        f"and 'day' (0 to 6 for Monday to Sunday). Example: "
+        f"[{{'title': 'Run 5km', 'category': 'exercise', 'day': 0}}, ...]"
+    )
 
-    # Set calorie target
-    calories = tdee + 500 if goal == 'bulking' else tdee - 500
+    # Call Hugging Face API
+    headers = {
+        "Authorization": f"Bearer {settings.HUGGINGFACE_API_KEY}",
+        "Content-Type": "application/json",
+    }
+    payload = {
+        "inputs": prompt,
+        "parameters": {
+            "max_new_tokens": 500,
+            "return_full_text": False,
+            "temperature": 0.7,
+        },
+    }
+    try:
+        response = requests.post(
+            "https://api-inference.huggingface.co/models/mixtral-8x7b-instruct-v0.1",
+            headers=headers,
+            json=payload,
+            timeout=30,
+        )
+        response.raise_for_status()
+        tasks_json = response.json()[0]["generated_text"]
 
-    # Macros (grams)
-    protein = weight * 2
-    carb_percentage = 0.45 if goal == 'bulking' else 0.30
-    carbs = (calories * carb_percentage) / 4
-    fat = (calories * 0.25) / 9
+        # Parse JSON (assuming model outputs valid JSON)
+        import json
+        tasks_data = json.loads(tasks_json)
+    except (requests.RequestException, json.JSONDecodeError) as e:
+        # Fallback: Return empty list if API fails
+        print(f"Error calling Hugging Face API: {e}")
+        return []
 
-    # Generate tasks
+    # Create Task objects
     tasks = []
     today = datetime.now()
-
-    # Exercise tasks (5 days)
-    exercises = {
-        'bulking': [
-            ('Strength: Squats, Deadlifts (3 sets)', 60),
-            ('Strength: Bench Press, Rows (3 sets)', 60),
-            ('Cardio: 20min cycling', 20),
-            ('Strength: Pull-ups, Push-ups (3 sets)', 45),
-            ('Cardio: 30min jogging', 30),
-        ],
-        'dieting': [
-            ('Cardio: Run 5km', 40),
-            ('Light Weights: Full body (3 sets)', 45),
-            ('Cardio: 30min cycling', 30),
-            ('HIIT: 20min intervals', 20),
-            ('Cardio: Walk 10km', 60),
-        ],
-    }
-    for i, (title, duration) in enumerate(exercises[goal]):
+    for task_data in tasks_data:
         tasks.append(Task(
             user=user,
-            title=title,
-            category='exercise',
-            due_date=today + timedelta(days=i),
+            title=task_data["title"],
+            category=task_data["category"],
+            due_date=today + timedelta(days=task_data["day"]),
             created_at=today,
         ))
-
-    # Nutrition tasks (daily)
-    meal_plan = [
-        f"Eat {int(protein/3)}g protein breakfast",
-        f"Eat {int(carbs/3)}g carbs lunch",
-        f"Eat {int(protein/3)}g protein dinner",
-        f"Eat {int(fat/2)}g fat snack",
-    ]
-    for i in range(7):
-        for title in meal_plan:
-            tasks.append(Task(
-                user=user,
-                title=title,
-                category='nutrition',
-                due_date=today + timedelta(days=i),
-                created_at=today,
-            ))
 
     # Save tasks
     Task.objects.bulk_create(tasks)

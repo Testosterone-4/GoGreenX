@@ -72,6 +72,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -196,3 +197,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'khaledgafaar211@gmail.com'
 EMAIL_HOST_PASSWORD = 'brqb ndhc pxaj oerj'
 
+
+#AI Model Api
+
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
