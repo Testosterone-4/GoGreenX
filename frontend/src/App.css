@@ -1,3 +1,17 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
 
 .sidebar-link {
   color: rgba(255, 255, 255, 0.6); /* dimmed */
@@ -10,4 +24,8 @@
 }
 .navbar-custom {
   background-color: #1E2A30;
+}
+
+.footer-link:hover {
+  color: white !important;
 }
