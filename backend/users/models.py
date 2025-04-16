@@ -22,5 +22,13 @@ class Profile(models.Model):
     location = models.CharField(max_length=100, blank=True)
     points = models.IntegerField(default=0)
 
-    def __str__(self):
-        return f"{self.user.username}'s Profile"
+class FitnessInput(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='fitness_input')
+    weight = models.FloatField()
+    height = models.FloatField()
+    sex = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')])
+    age = models.IntegerField()
+    goal = models.CharField(max_length=20, choices=[('bulking', 'Bulking'), ('dieting', 'Dieting')])
+    created_at = models.DateTimeField(auto_now_add=True)
+

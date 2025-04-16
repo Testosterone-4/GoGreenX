@@ -46,10 +46,11 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
 
-    'users',
-    'wearables',
-    'sustainability',
-    'gamification',
+    'users.apps.UsersConfig',
+    'wearables.apps.WearablesConfig',
+    'sustainability.apps.SustainabilityConfig',
+    'gamification.apps.GamificationConfig',
+    'tasks.apps.TasksConfig',
     'blog',
 ]
 
@@ -71,6 +72,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -170,10 +172,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / "backend" / "static",
 ]
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Media files (user-uploaded content)
 MEDIA_URL = '/media/'
@@ -195,3 +198,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'khaledgafaar211@gmail.com'
 EMAIL_HOST_PASSWORD = 'brqb ndhc pxaj oerj'
 
+
+#AI Model Api
+
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
