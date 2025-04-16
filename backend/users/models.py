@@ -31,3 +31,4 @@ class FitnessInput(models.Model):
     age = models.IntegerField()
     goal = models.CharField(max_length=20, choices=[('bulking', 'Bulking'), ('dieting', 'Dieting')])
     created_at = models.DateTimeField(auto_now_add=True)
+
