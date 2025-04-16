@@ -46,10 +46,11 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
 
-    'users',
-    'wearables',
-    'sustainability',
-    'gamification',
+    'users.apps.UsersConfig',
+    'wearables.apps.WearablesConfig',
+    'sustainability.apps.SustainabilityConfig',
+    'gamification.apps.GamificationConfig',
+    'tasks.apps.TasksConfig',
     'blog',
 ]
 
