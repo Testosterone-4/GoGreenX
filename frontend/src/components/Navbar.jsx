@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom';
-import '../assets/css/main.css';
+import { Link } from "react-router-dom";
+import "../assets/css/main.css";
 
 const Navbar = () => {
   return (
