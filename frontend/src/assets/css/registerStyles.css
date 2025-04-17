@@ -1,0 +1,43 @@
+/* modalStyles.css */
+
+.ggx-modal-header {
+    background-color: #28a745;
+    color: #fff;
+    border-bottom: none;
+  }
+  
+  .ggx-modal-body {
+    background-color: #f4fff7;
+  }
+  
+  .ggx-modal-footer {
+    background-color: #f4fff7;
+    border-top: none;
+  }
+  
+  .ggx-btn {
+    background-color: #2e7d32 !important;
+    border: none;
+    color: white;
+    font-weight: 500;
+  }
+  
+  .ggx-btn:hover {
+    background-color: #1b5e20 !important;
+  }
+  .ggx-google-btn {
+    background-color: #ffffff !important;
+    border: 1px solid #2e7d32;
+    color: #2e7d32;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ggx-google-btn:hover {
+    background-color: #e8f5e9 !important;
+    border-color: #1b5e20;
+    color: #1b5e20;
+  }
+  
