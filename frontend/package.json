@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "lucide-react": "^0.488.0",
     "@react-oauth/google": "^0.12.1",
     "form": "^0.2.5",
     "framer-motion": "^12.7.2",

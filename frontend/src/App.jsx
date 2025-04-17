@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -23,6 +25,7 @@ function App() {
           <Route path="/fitness-plan" element={<FitnessPlan />} />
         </Routes>
       </div>
+      <Footer />
     </Router>
   );
 }
