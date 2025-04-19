@@ -1,0 +1,18 @@
+.page-link {
+  border-radius: 0.375rem;
+}
+
+.page-item.active .page-link {
+  background-color: #198754;
+  border-color: #198754;
+  color: #fff;
+}
+
+.card-title {
+  font-size: 1rem;
+}
+
+.card-img-top {
+  height: 180px;
+  object-fit: cover;
+}
