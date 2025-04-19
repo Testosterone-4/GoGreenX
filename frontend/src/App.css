@@ -29,3 +29,54 @@ main {
 .footer-link:hover {
   color: white !important;
 }
+
+.navbar-custom {
+  background-color: #1a5632;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-link {
+  color: #e8f5e9 !important;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link.active {
+  color: #a5d6a7 !important;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #a5d6a7;
+}
+
+.btn-light {
+  background-color: #81c784;
+  border-color: #66bb6a;
+  color: #1b5e20;
+  transition: all 0.3s ease;
+}
+
+.btn-light:hover {
+  background-color: #66bb6a;
+  border-color: #4caf50;
+  color: #fff;
+}
+
+.btn-link {
+  color: #e8f5e9 !important;
+}
+
+.btn-link:hover {
+  color: #a5d6a7 !important;
+}
+
+.offcanvas-start {
+  width: 250px;
+}
+

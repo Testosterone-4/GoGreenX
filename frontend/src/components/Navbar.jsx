@@ -1,149 +1,252 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import LoginModal from '../pages/Login';
+import AuthModals from '../pages/Register';
 import '../App.css';
+import '../assets/css/main.css';
 
-export default function Navbar() {
+const Navbar = () => {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+
   return (
-    <nav className="navbar px-4 py-2 navbar-custom">
-      <div className="container-fluid d-flex justify-content-between align-items-center">
+    <>
+      <nav className="navbar px-4 py-2 navbar-custom fixed-top">
+        <div className="container-fluid d-flex justify-content-between align-items-center">
+          
+          {/* Left: Logo + Main Navigation */}
+          <div className="d-flex align-items-center">
+            <button
+              className="btn btn-dark d-lg-none me-2"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#sidebarMenu"
+              aria-controls="sidebarMenu"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <NavLink className="navbar-brand fw-bold text-white" to="/">
+              GoGreenX
+            </NavLink>
+            
+            {/* Desktop Main Navigation */}
+            <ul className="navbar-nav flex-row d-none d-lg-flex ms-4">
+              <li className="nav-item mx-2">
+                <NavLink 
+                  to="/training" 
+                  className={({ isActive }) => 
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                >
+                  Training
+                </NavLink>
+              </li>
+              <li className="nav-item mx-2">
+                <NavLink 
+                  to="/nutrition" 
+                  className={({ isActive }) => 
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                >
+                  Nutrition
+                </NavLink>
+              </li>
+              <li className="nav-item mx-2">
+                <NavLink 
+                  to="/forum" 
+                  className={({ isActive }) => 
+                    `nav-link ${isActive ? 'active' : ''}`
+                  }
+                >
+                  Forum
+                </NavLink>
+              </li>
+            </ul>
+          </div>
 
-        {/* Left: (mobile only) + Logo */}
-        <div className="d-flex align-items-center">
-          <button
-            className="btn btn-dark d-lg-none me-2"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#sidebarMenu"
-            aria-controls="sidebarMenu"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-          <Link className="navbar-brand fw-bold text-white" to="/">
-            FREELETICS
-          </Link>
+          {/* Right: User Navigation + Auth */}
+          <div className="d-flex align-items-center gap-3">
+            {/* User Navigation Links */}
+            <div className="d-none d-lg-flex align-items-center me-4">
+              <NavLink 
+                to="/dashboard" 
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? 'active' : ''}`
+                }
+              >
+                Dashboard
+              </NavLink>
+              <NavLink 
+                to="/actions" 
+                className={({ isActive }) => 
+                  `nav-link mx-3 ${isActive ? 'active' : ''}`
+                }
+              >
+                Actions
+              </NavLink>
+              <NavLink 
+                to="/fitness-plan" 
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? 'active' : ''}`
+                }
+              >
+                Fitness Plan
+              </NavLink>
+              <NavLink 
+                to="/profile" 
+                className={({ isActive }) => 
+                  `nav-link mx-3 ${isActive ? 'active' : ''}`
+                }
+              >
+                Profile
+              </NavLink>
+            </div>
+
+            {/* Auth and Language */}
+            <span className="text-white">EN</span>
+            <button
+              className="btn btn-link text-white text-decoration-none"
+              onClick={() => setShowLogin(true)}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-link text-white text-decoration-none"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
+            <button className="btn btn-light">Start now →</button>
+          </div>
         </div>
 
-        {/* Center: Tabs (only visible on large screens) */}
-        <ul className="navbar-nav flex-row d-none d-lg-flex">
-          <li className="nav-item mx-2">
-            <Link className="sidebar-link" to="/training">Training</Link>
-          </li>
-          <li className="nav-item mx-2">
-            <Link className="sidebar-link" to="/nutrition">Nutrition</Link>
-          </li>
-          <li className="nav-item mx-2">
-            <Link className="sidebar-link" to="/forum">Forum</Link>
-          </li>
-        </ul>
-
-        {/* Right: Language + Start now button */}
-        <div className="d-flex align-items-center">
-          <span className="text-white me-3">EN</span>
-          <button className="btn btn-light">Start now →</button>
+        {/* Mobile Offcanvas Sidebar */}
+        <div
+          className="offcanvas offcanvas-start text-bg-dark"
+          tabIndex="-1"
+          id="sidebarMenu"
+          aria-labelledby="sidebarMenuLabel"
+        >
+          <div className="offcanvas-header">
+            <h5 className="offcanvas-title" id="sidebarMenuLabel">GoGreenX</h5>
+            <button
+              type="button"
+              className="btn-close btn-close-white"
+              data-bs-dismiss="offcanvas"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="offcanvas-body">
+            <ul className="nav flex-column">
+              <li className="nav-item">
+                <NavLink 
+                  to="/training" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Training
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/nutrition" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Nutrition
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/forum" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Forum
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/dashboard" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Dashboard
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/actions" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Actions
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/fitness-plan" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Fitness Plan
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink 
+                  to="/profile" 
+                  className={({ isActive }) => 
+                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
+                  }
+                  data-bs-dismiss="offcanvas"
+                >
+                  Profile
+                </NavLink>
+              </li>
+              <hr className="bg-secondary my-3" />
+              <li className="nav-item">
+                <button
+                  className="sidebar-link nav-link btn btn-link"
+                  onClick={() => {
+                    setShowLogin(true);
+                    document.querySelector('[data-bs-dismiss="offcanvas"]').click();
+                  }}
+                >
+                  Login
+                </button>
+              </li>
+              <li className="nav-item">
+                <button
+                  className="sidebar-link nav-link btn btn-link"
+                  onClick={() => {
+                    setShowRegister(true);
+                    document.querySelector('[data-bs-dismiss="offcanvas"]').click();
+                  }}
+                >
+                  Register
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
+      </nav>
 
-      {/* Offcanvas Sidebar (mobile only) */}
-      <div
-        className="offcanvas offcanvas-start text-bg-dark"
-        tabIndex="-1"
-        id="sidebarMenu"
-        aria-labelledby="sidebarMenuLabel"
-      >
-        <div className="offcanvas-header">
-          <h5 className="offcanvas-title" id="sidebarMenuLabel">FREELETICS</h5>
-          <button
-            type="button"
-            className="btn-close btn-close-white"
-            data-bs-dismiss="offcanvas"
-            aria-label="Close"
-          ></button>
-        </div>
-        <div className="offcanvas-body">
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <Link to="/training" className="sidebar-link">Training</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/nutrition" className="sidebar-link">Nutrition</Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/forum" className="sidebar-link">Forum</Link>
-            </li>
-            <hr className="bg-secondary my-3" />
-            <li className="nav-item">
-              <Link to="/login" className="sidebar-link">Log In</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-// import { NavLink } from 'react-router-dom';
-// import { useState } from 'react';
-// import LoginModal from '../pages/Login';
-// import AuthModals from '../pages/Register';
-// import '../assets/css/main.css';
-
-
-// const Navbar = () => {
-//   const [showLogin, setShowLogin] = useState(false);
-//   const [showRegister, setShowRegister] = useState(false);
-
-//   return (
-// <>
-//       <nav className="navbar navbar-expand-lg navbar-dark fixed-top">
-//         <div className="container-fluid">
-//           <NavLink className="navbar-brand" to="/">Green Living Hub</NavLink>
-//           <button
-//             className="navbar-toggler"
-//             type="button"
-//             data-bs-toggle="collapse"
-//             data-bs-target="#navbarNav"
-//             aria-controls="navbarNav"
-//             aria-expanded="false"
-//             aria-label="Toggle navigation"
-//           >
-//             <span className="navbar-toggler-icon"></span>
-//           </button>
-//           <div className="collapse navbar-collapse" id="navbarNav">
-//             <ul className="navbar-nav ms-auto">
-//               <li className="nav-item">
-//                 <NavLink className="nav-link" to="/" exact="true">Home</NavLink>
-//               </li>
-//               <li className="nav-item">
-//                 <NavLink className="nav-link" to="/dashboard">Dashboard</NavLink>
-//               </li>
-//               <li className="nav-item">
-//                 <NavLink className="nav-link" to="/actions">Actions</NavLink>
-//               </li>
-//               <li className="nav-item">
-//                 <NavLink className="nav-link" to="/fitness-plan">Fitness Plan</NavLink>
-//               </li>
-//               <li className="nav-item">
-//                 <NavLink className="nav-link" to="/profile">Profile</NavLink>
-//               </li>
-//               <li className="nav-item">
-//                 <button
-//                   className="nav-link btn btn-link text-white"
-//                   onClick={() => setShowLogin(true)}
-//                 >
-//                   Login
-//                 </button>
-//               </li>
-//               <li className="nav-item">
-//                 <button
-//                   className="nav-link btn btn-link text-white"
-//                   onClick={() => setShowRegister(true)}
-//                 >
-//                   Register
-//                 </button>
-//               </li>
-//             </ul>
-//           </div>
-//         </div>
-//       </nav>
-//       <LoginModal show={showLogin} handleClose={() => setShowLogin(false)} />
-//       <AuthModals show={showRegister} handleClose={() => setShowRegister(false)} />
-//     </>
+      <LoginModal show={showLogin} handleClose={() => setShowLogin(false)} />
+      <AuthModals show={showRegister} handleClose={() => setShowRegister(false)} />
+    </>
   );
 }
+
+export default Navbar;
