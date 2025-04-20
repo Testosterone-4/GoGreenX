@@ -24,10 +24,10 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
+    path('api/', include('tasks.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('social/', include('social_django.urls', namespace='social')),
     path('api/', include('users.urls')),
-    path('api/tasks/', include('tasks.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
