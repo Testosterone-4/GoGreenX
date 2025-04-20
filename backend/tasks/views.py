@@ -38,6 +38,42 @@ class TaskListView(APIView):
         task_data = [{'id': t.id, 'title': t.title, 'category': t.category, 'due_date': t.due_date, 'is_completed': t.is_completed} for t in tasks]
         return Response(task_data)
 
+    def post(self, request):
+        data = request.data
+        task = Task.objects.create(
+            user=request.user,
+            title=data['title'],
+            category=data['category'],
+            due_date=data['due_date'],
+            is_completed=False
+        )
+        return Response({
+            'id': task.id,
+            'title': task.title,
+            'category': task.category,
+            'due_date': task.due_date,
+            'is_completed': task.is_completed
+        }, status=status.HTTP_201_CREATED)
+
+class TaskCreateView(APIView):
+    def post(self, request):
+        data = request.data
+        task = Task.objects.create(
+            user=request.user,
+            title=data['title'],
+            category=data['category'],
+            due_date=data['due_date'],
+            is_completed=False
+        )
+        return Response({
+            'id': task.id,
+            'title': task.title,
+            'category': task.category,
+            'due_date': task.due_date,
+            'is_completed': task.is_completed
+        }, status=status.HTTP_201_CREATED)
+
+class TaskUpdateView(APIView):
     def patch(self, request, task_id):
         try:
             task = Task.objects.get(id=task_id, user=request.user)
