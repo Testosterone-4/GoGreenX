@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'corsheaders',
+    'social_django',
 
     'users.apps.UsersConfig',
     'wearables.apps.WearablesConfig',
@@ -202,3 +203,6 @@ EMAIL_HOST_PASSWORD = 'brqb ndhc pxaj oerj'
 #AI Model Api
 
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
