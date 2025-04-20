@@ -1,53 +1,73 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ListGroup, Button } from 'react-bootstrap';
 
-const TaskList = () => {
-  const [tasks, setTasks] = useState([]);
+const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
+  const [tasks, setTasks] = useState(initialTasks || []);
+  const [error, setError] = useState(null);
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('http://localhost:8000/api/tasks/', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+        headers: { Authorization: `Token ${token}` },
       });
+      console.log('Fetched Tasks:', response.data);
       setTasks(response.data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      setError('Failed to fetch tasks');
     }
   };
 
-  const handleToggle = async (taskId, isCompleted) => {
+  const handleToggleComplete = async (taskId, isCompleted) => {
     try {
-      await axios.patch(`http://localhost:8000/api/tasks/${taskId}/`, { is_completed: !isCompleted }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      const token = localStorage.getItem('token');
+      const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+        is_completed: !isCompleted,
+      }, {
+        headers: { Authorization: `Token ${token}` },
       });
-      setTasks(tasks.map(task => task.id === taskId ? { ...task, is_completed: !isCompleted } : task));
+      setTasks(tasks.map(task => task.id === taskId ? response.data : task));
+      if (onUpdateTask) onUpdateTask(response.data);
     } catch (error) {
       console.error('Error updating task:', error);
+      setError('Failed to update task');
     }
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (!initialTasks || initialTasks.length === 0) {
+      fetchTasks();
+    } else {
+      setTasks(initialTasks);
+    }
+  }, [initialTasks]);
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-3">Your Tasks</h2>
-      <ul className="list-group">
-        {tasks.map(task => (
-          <li key={task.id} className="list-group-item d-flex align-items-center">
-            <input
-              type="checkbox"
-              checked={task.is_completed}
-              onChange={() => handleToggle(task.id, task.is_completed)}
-              className="form-check-input me-2"
-            />
-            <span className={task.is_completed ? 'text-decoration-line-through' : ''}>
-              {task.title} ({task.category}, Due: {new Date(task.due_date).toLocaleDateString()})
-            </span>
-          </li>
-        ))}
-      </ul>
+    <div className="mt-4">
+      {error && <div className="alert alert-danger">{error}</div>}
+      <h3>Your Fitness Tasks</h3>
+      {tasks.length === 0 ? (
+        <p>No tasks available. Generate a fitness plan to get started!</p>
+      ) : (
+        <ListGroup>
+          {tasks.map(task => (
+            <ListGroup.Item key={task.id} className="d-flex justify-content-between align-items-center">
+              <span style={{ textDecoration: task.is_completed ? 'line-through' : 'none' }}>
+                {task.title} ({task.category})
+              </span>
+              <Button
+                variant={task.is_completed ? 'outline-success' : 'success'}
+                onClick={() => handleToggleComplete(task.id, task.is_completed)}
+              >
+                {task.is_completed ? 'Undo' : 'Complete'}
+              </Button>
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
+      )}
     </div>
   );
 };
