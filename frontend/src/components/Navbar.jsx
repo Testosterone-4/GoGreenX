@@ -9,15 +9,14 @@ const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true); // Simulated login state
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 170) {
         setScrolled(true);
-        console.log('Scrolled down');
       } else {
         setScrolled(false);
-        console.log('At the top');
       }
     };
 
@@ -85,57 +84,30 @@ const Navbar = () => {
 
           {/* Right: User Navigation + Auth */}
           <div className="d-flex align-items-center gap-3">
-            {/* User Navigation Links */}
-            <div className="d-none d-lg-flex align-items-center me-4">
-              <NavLink 
-                to="/dashboard" 
-                className={({ isActive }) => 
-                  `nav-link ${isActive ? 'active' : ''}`
-                }
+            {/* Show Login/Register for logged-in users */}
+            {isLoggedIn ? (
+              <>
+                <button
+                  className="btn btn-link text-white text-decoration-none"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Login
+                </button>
+                <button
+                  className="btn btn-link text-white text-decoration-none"
+                  onClick={() => setShowRegister(true)}
+                >
+                  Register
+                </button>
+              </>
+            ) : (
+              <button
+                className="btn btn-link text-white text-decoration-none"
+                onClick={() => setIsLoggedIn(false)} // Simulate logout
               >
-                Dashboard
-              </NavLink>
-              <NavLink 
-                to="/actions" 
-                className={({ isActive }) => 
-                  `nav-link mx-3 ${isActive ? 'active' : ''}`
-                }
-              >
-                Actions
-              </NavLink>
-              <NavLink 
-                to="/fitness-plan" 
-                className={({ isActive }) => 
-                  `nav-link ${isActive ? 'active' : ''}`
-                }
-              >
-                Fitness Plan
-              </NavLink>
-              <NavLink 
-                to="/profile" 
-                className={({ isActive }) => 
-                  `nav-link mx-3 ${isActive ? 'active' : ''}`
-                }
-              >
-                Profile
-              </NavLink>
-            </div>
-
-            {/* Auth and Language */}
-            <span className="text-white">EN</span>
-            <button
-              className="btn btn-link text-white text-decoration-none"
-              onClick={() => setShowLogin(true)}
-            >
-              Login
-            </button>
-            <button
-              className="btn btn-link text-white text-decoration-none"
-              onClick={() => setShowRegister(true)}
-            >
-              Register
-            </button>
-            <button className="btn btn-light">Start now →</button>
+                Logout
+              </button>
+            )}
           </div>
         </div>
 
