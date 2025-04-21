@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import LoginModal from '../pages/Login';
 import AuthModals from '../pages/Register';
@@ -8,10 +8,29 @@ import '../assets/css/main.css';
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 170) {
+        setScrolled(true);
+        console.log('Scrolled down');
+      } else {
+        setScrolled(false);
+        console.log('At the top');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
     <>
-      <nav className="navbar px-4 py-2 navbar-custom fixed-top">
+      <nav className={scrolled ? "scrolled px-4 py-2 fixed-top" : "test px-4 py-2 fixed-top"}>
         <div className="container-fluid d-flex justify-content-between align-items-center">
           
           {/* Left: Logo + Main Navigation */}
