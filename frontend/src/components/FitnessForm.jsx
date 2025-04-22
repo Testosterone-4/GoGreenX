@@ -13,6 +13,8 @@ const FitnessForm = ({ onPlanGenerated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(null);
+  const [generatedTasks, setGeneratedTasks] = useState(null);
+  const [isAccepting, setIsAccepting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +50,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
           fitness_input_id: response.data.fitness_input_id
         });
       }
+      setGeneratedTasks(response.data.tasks);
       if (response.data.tasks.some(task => task.title.includes('Task'))) {
         setWarning('Fitness plan generation service is unavailable. Using default tasks.');
       }
@@ -70,6 +73,36 @@ const FitnessForm = ({ onPlanGenerated }) => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAcceptPlan = async () => {
+    if (!generatedTasks) return;
+    setIsAccepting(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      // Post each task to /api/tasks/list/
+      for (const task of generatedTasks) {
+        await axios.post('http://localhost:8000/api/tasks/list/', {
+          title: task.title,
+          category: task.category,
+          due_date: task.due_date,
+          is_completed: task.is_completed
+        }, {
+          headers: { Authorization: `Token ${token}` },
+        });
+      }
+      alert('Fitness plan accepted and tasks added!');
+      navigate('/actions');
+    } catch (error) {
+      console.error('Error accepting plan:', error);
+      alert('Failed to accept plan.');
+    } finally {
+      setIsAccepting(false);
     }
   };
 
@@ -154,6 +187,15 @@ const FitnessForm = ({ onPlanGenerated }) => {
           {isLoading ? 'Generating Plan...' : 'Generate Plan'}
         </button>
       </form>
+      {generatedTasks && (
+        <button
+          className="btn btn-success w-100 mt-3"
+          onClick={handleAcceptPlan}
+          disabled={isAccepting}
+        >
+          {isAccepting ? 'Accepting Plan...' : 'Accept Plan'}
+        </button>
+      )}
     </div>
   );
 };

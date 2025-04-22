@@ -50,49 +50,32 @@ class TaskListView(APIView):
     def get(self, request):
         tasks = Task.objects.filter(user=request.user)
         task_data = TaskSerializer(tasks, many=True).data
-        return Response(task_data)
+        return Response(task_data, status=status.HTTP_200_OK)
 
     def post(self, request):
         data = request.data
-        task = Task.objects.create(
-            user=request.user,
-            title=data['title'],
-            category=data['category'],
-            due_date=data['due_date'],
-            is_completed=False
-        )
-        return Response({
-            'id': task.id,
-            'title': task.title,
-            'category': task.category,
-            'due_date': task.due_date,
-            'is_completed': task.is_completed
-        }, status=status.HTTP_201_CREATED)
-
-class TaskCreateView(APIView):
-    def post(self, request):
-        data = request.data
-        task = Task.objects.create(
-            user=request.user,
-            title=data['title'],
-            category=data['category'],
-            due_date=data['due_date'],
-            is_completed=False
-        )
-        return Response({
-            'id': task.id,
-            'title': task.title,
-            'category': task.category,
-            'due_date': task.due_date,
-            'is_completed': task.is_completed
-        }, status=status.HTTP_201_CREATED)
+        try:
+            task = Task.objects.create(
+                user=request.user,
+                title=data['title'],
+                category=data['category'],
+                due_date=data['due_date'],
+                is_completed=False
+            )
+            return Response(TaskSerializer(task).data, status=status.HTTP_201_CREATED)
+        except KeyError as e:
+            return Response({'error': f'Missing field: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class TaskUpdateView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def patch(self, request, task_id):
         try:
             task = Task.objects.get(id=task_id, user=request.user)
             task.is_completed = request.data.get('is_completed', task.is_completed)
             task.save()
-            return Response(TaskSerializer(task).data)
+            return Response(TaskSerializer(task).data, status=status.HTTP_200_OK)
         except Task.DoesNotExist:
             return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -22,9 +22,10 @@ const FitnessPlan = () => {
       });
       console.log('Fetched Tasks:', response.data);
       setTasks(response.data);
+      setError(null);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      setError('Failed to fetch tasks');
+      setError(error.response?.status === 404 ? 'Tasks endpoint not found. Please contact support.' : 'Failed to fetch tasks');
     }
   };
 
@@ -33,7 +34,7 @@ const FitnessPlan = () => {
   }, []);
 
   return (
-    <div className="container mt-5" style={{ paddingTop: '50px'}}>
+    <div className="container mt-5">
       <h1>Fitness Plan</h1>
       {error && <div className="alert alert-danger">{error}</div>}
       <FitnessForm onPlanGenerated={handlePlanGenerated} />
