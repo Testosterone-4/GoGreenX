@@ -1,14 +1,19 @@
 from django.db import models
+from django.conf import settings
 import uuid
 
 class Task(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='tasks')
-    title = models.CharField(max_length=200)
-    category = models.CharField(max_length=20, choices=[('exercise', 'Exercise'), ('nutrition', 'Nutrition')])
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=150)
+    category = models.CharField(max_length=20, choices=[
+        ('exercise', 'Exercise'),
+        ('nutrition', 'Nutrition'),
+        ('sustainability', 'Sustainability'),
+    ])
     is_completed = models.BooleanField(default=False)
-    due_date = models.DateTimeField()
+    due_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} ({self.user.username})"
+        return self.title

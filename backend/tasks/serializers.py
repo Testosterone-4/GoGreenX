@@ -18,3 +18,9 @@ class TaskSerializer(serializers.ModelSerializer):
         if value < timezone.now():
             raise serializers.ValidationError("Due date cannot be in the past.")
         return value
+
+    def validate_category(self, value):
+        valid_categories = ['exercise', 'nutrition', 'sustainability']
+        if value not in valid_categories:
+            raise serializers.ValidationError(f"Category must be one of {valid_categories}.")
+        return value
