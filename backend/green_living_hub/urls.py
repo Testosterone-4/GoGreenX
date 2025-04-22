@@ -37,9 +37,10 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
-    path("api/", include("users.urls")),
-
-    path('api/tasks/', include('tasks.urls')),
+    path('api/', include('tasks.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
+    path('social/', include('social_django.urls', namespace='social')),
+    path('api/', include('users.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

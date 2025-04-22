@@ -1,22 +1,44 @@
-import FitnessForm from '../components/FitnessForm.jsx';
-import TaskList from '../components/TaskList.jsx';
+import React, { useState, useEffect } from 'react';
+import FitnessForm from '../components/FitnessForm';
+import TaskList from '../components/TaskList';
+import axios from 'axios';
 
 const FitnessPlan = () => {
-  const handlePlanGenerated = () => {
-    window.location.reload(); // Simple for MVP
+  const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
+
+  const handlePlanGenerated = ({ tasks, fitness_input_id }) => {
+    console.log('Plan Generated:', tasks, fitness_input_id);
+    setTasks(tasks);
+    fetchTasks();
   };
 
+  const fetchTasks = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) throw new Error('No token found');
+      const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+        headers: { Authorization: `Token ${token}` },
+      });
+      console.log('Fetched Tasks:', response.data);
+      setTasks(response.data);
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      setError(error.response?.status === 404 ? 'Tasks endpoint not found. Please contact support.' : 'Failed to fetch tasks');
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
   return (
-    <div className="container py-4">
-      <h1 className="display-5 mb-4 text-center">Your Fitness Plan</h1>
-      <div className="row">
-        <div className="col-12">
-          <FitnessForm onPlanGenerated={handlePlanGenerated} />
-        </div>
-        <div className="col-12">
-          <TaskList />
-        </div>
-      </div>
+    <div className="container mt-5">
+      <h1>Fitness Plan</h1>
+      {error && <div className="alert alert-danger">{error}</div>}
+      <FitnessForm onPlanGenerated={handlePlanGenerated} />
+      <TaskList tasks={tasks} />
     </div>
   );
 };

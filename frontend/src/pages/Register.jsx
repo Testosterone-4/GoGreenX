@@ -17,6 +17,7 @@ const AuthModals = ({ show, handleClose }) => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+
   const handleSignupChange = (e) => {
     const { name, value } = e.target;
     setSignupData(prev => ({
@@ -156,6 +157,7 @@ const AuthModals = ({ show, handleClose }) => {
     onError: () => {
       console.log("Google Sign Up Failed");
       setErrors(prev => ({...prev, general: 'Google sign up failed. Please try again.'}));
+
     },
     flow: 'implicit' // or 'auth-code' depending on your backend requirements
   });

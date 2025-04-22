@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const FitnessForm = ({ onPlanGenerated }) => {
   const [formData, setFormData] = useState({
@@ -10,6 +11,18 @@ const FitnessForm = ({ onPlanGenerated }) => {
     goal: 'bulking',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [warning, setWarning] = useState(null);
+  const [generatedTasks, setGeneratedTasks] = useState(null);
+  const [isAccepting, setIsAccepting] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -17,22 +30,87 @@ const FitnessForm = ({ onPlanGenerated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.persist();
     setIsLoading(true);
+    setError(null);
+    setWarning(null);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
       const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: { Authorization: `Token ${token}` },
       });
-      onPlanGenerated(response.data);
+      console.log('API Response:', response.data);
+      if (onPlanGenerated) {
+        onPlanGenerated({
+          tasks: response.data.tasks,
+          fitness_input_id: response.data.fitness_input_id
+        });
+      }
+      setGeneratedTasks(response.data.tasks);
+      if (response.data.tasks.some(task => task.title.includes('Task'))) {
+        setWarning('Fitness plan generation service is unavailable. Using default tasks.');
+      }
     } catch (error) {
       console.error('Error generating plan:', error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/login');
+      } else {
+        const serverError = error.response?.data?.error || 'Failed to generate fitness plan. Please try again.';
+        setError(
+          serverError.includes('Gemini API failed') 
+            ? 'Fitness plan generation service is temporarily unavailable. Using default tasks.'
+            : serverError.includes('parse JSON') 
+            ? 'Unable to generate tasks due to API response. Using default tasks.'
+            : serverError.includes('value too long') 
+            ? 'Generated tasks are too long. Please try again or contact support.' 
+            : serverError
+        );
+      }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleAcceptPlan = async () => {
+    if (!generatedTasks) return;
+    setIsAccepting(true);
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
+      // Post each task to /api/tasks/list/
+      for (const task of generatedTasks) {
+        await axios.post('http://localhost:8000/api/tasks/list/', {
+          title: task.title,
+          category: task.category,
+          due_date: task.due_date,
+          is_completed: task.is_completed
+        }, {
+          headers: { Authorization: `Token ${token}` },
+        });
+      }
+      alert('Fitness plan accepted and tasks added!');
+      navigate('/actions');
+    } catch (error) {
+      console.error('Error accepting plan:', error);
+      alert('Failed to accept plan.');
+    } finally {
+      setIsAccepting(false);
     }
   };
 
   return (
     <div className="card p-4 mb-4 mx-auto" style={{ maxWidth: '500px' }}>
       <h2 className="card-title text-center mb-4">Generate Fitness Plan</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
+      {warning && <div className="alert alert-warning">{warning}</div>}
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <label htmlFor="weight" className="form-label">Weight (kg)</label>
@@ -109,6 +187,15 @@ const FitnessForm = ({ onPlanGenerated }) => {
           {isLoading ? 'Generating Plan...' : 'Generate Plan'}
         </button>
       </form>
+      {generatedTasks && (
+        <button
+          className="btn btn-success w-100 mt-3"
+          onClick={handleAcceptPlan}
+          disabled={isAccepting}
+        >
+          {isAccepting ? 'Accepting Plan...' : 'Accept Plan'}
+        </button>
+      )}
     </div>
   );
 };

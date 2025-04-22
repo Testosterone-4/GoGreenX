@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useGoogleLogin } from '@react-oauth/google';
 
+
 const LoginModal = ({ show, handleClose }) => {
   // Define the green color as a constant to ensure consistency
   const greenColor = '#28a745';
