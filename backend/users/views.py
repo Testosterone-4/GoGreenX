@@ -1,40 +1,68 @@
-from django.contrib.auth import authenticate
+from urllib.parse import urlencode
+from rest_framework import serializers
 from rest_framework.views import APIView
+from django.conf import settings
+from django.shortcuts import redirect
 from rest_framework.response import Response
+from .mixins import PublicApiMixin, ApiErrorsMixin
+from .utils import google_get_access_token, google_get_user_info, generate_tokens_for_user
+from .models import User
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from .models import User, Profile
-from .serializers import UserCreateSerializer, ProfileSerializer
+from .serializers import UserCreateSerializer
 
-class RegisterView(APIView):
-    def post(self, request):
-        user_data = {
-            'email': request.data.get('email'),
-            'username': request.data.get('username'),
-            'password': request.data.get('password'),
-            'first_name': request.data.get('first_name', ''),
-            'last_name': request.data.get('last_name', '')
-        }
-        serializer = UserCreateSerializer(data=user_data)
-        if serializer.is_valid():
-            user = serializer.save()
-            profile_data = {
-                'user': user.id,
-                'location': request.data.get('address', ''),
+
+class GoogleLoginApi(PublicApiMixin, ApiErrorsMixin, APIView):
+    class InputSerializer(serializers.Serializer):
+        code = serializers.CharField(required=False)
+        error = serializers.CharField(required=False)
+
+    def get(self, request, *args, **kwargs):
+        input_serializer = self.InputSerializer(data=request.GET)
+        input_serializer.is_valid(raise_exception=True)
+
+        validated_data = input_serializer.validated_data
+
+        code = validated_data.get('code')
+        error = validated_data.get('error')
+
+        login_url = f'{settings.BASE_FRONTEND_URL}'
+
+        if error or not code:
+            params = urlencode({'error': error})
+            return redirect(f'{login_url}?{params}')
+
+        redirect_uri = f'{settings.BASE_FRONTEND_URL}/google'
+        access_token = google_get_access_token(code=code,
+                                               redirect_uri=redirect_uri)
+
+        user_data = google_get_user_info(access_token=access_token)
+
+        try:
+            user = User.objects.get(email=user_data['email'])
+            access_token, refresh_token = generate_tokens_for_user(user)
+            response_data = {
+                'user': UserCreateSerializer(user).data,
+                'access_token': str(access_token),
+                'refresh_token': str(refresh_token)
             }
-            profile_serializer = ProfileSerializer(data=profile_data)
-            if profile_serializer.is_valid():
-                profile_serializer.save()
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response_data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            # username = user_data['email'].split('@')[0]
+            first_name = user_data.get('given_name', '')
+            last_name = user_data.get('family_name', '')
 
-class LoginView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(email=email, password=password)
-        if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+            user = User.objects.create(
+                email=user_data['email'],
+                first_name=first_name,
+                last_name=last_name,
+                registration_method='google'
+            )
+
+            access_token, refresh_token = generate_tokens_for_user(user)
+            response_data = {
+                'user': UserCreateSerializer(user).data,
+                'access_token': str(access_token),
+                'refresh_token': str(refresh_token)
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+
