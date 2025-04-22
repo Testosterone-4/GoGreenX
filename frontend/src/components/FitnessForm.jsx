@@ -17,8 +17,26 @@ const FitnessForm = ({ onPlanGenerated }) => {
   const [isAccepting, setIsAccepting] = useState(false);
   const navigate = useNavigate();
 
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) throw new Error('No refresh token found');
+      const response = await axios.post('http://localhost:8000/auth/jwt/refresh/', {
+        refresh: refreshToken
+      });
+      localStorage.setItem('accessToken', response.data.access);
+      return response.data.access;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      navigate('/login');
+      return null;
+    }
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     if (!token) {
       navigate('/login');
     }
@@ -30,40 +48,59 @@ const FitnessForm = ({ onPlanGenerated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    e.persist();
     setIsLoading(true);
     setError(null);
     setWarning(null);
     try {
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('accessToken');
       if (!token) {
         navigate('/login');
         return;
       }
       const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
-        headers: { Authorization: `Token ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       console.log('API Response:', response.data);
       if (onPlanGenerated) {
         onPlanGenerated({
           tasks: response.data.tasks,
-          fitness_input_id: response.data.fitness_input_id
+          fitness_input: response.data.fitness_input
         });
       }
       setGeneratedTasks(response.data.tasks);
-      if (response.data.tasks.some(task => task.title.includes('Task'))) {
+      if (response.data.tasks.some(task => task.title.includes('Walk 30 minutes'))) {
         setWarning('Fitness plan generation service is unavailable. Using default tasks.');
       }
     } catch (error) {
       console.error('Error generating plan:', error);
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        navigate('/login');
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            if (onPlanGenerated) {
+              onPlanGenerated({
+                tasks: response.data.tasks,
+                fitness_input: response.data.fitness_input
+              });
+            }
+            setGeneratedTasks(response.data.tasks);
+            if (response.data.tasks.some(task => task.title.includes('Walk 30 minutes'))) {
+              setWarning('Fitness plan generation service is unavailable. Using default tasks.');
+            }
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            setError(retryError.response?.data?.error || 'Failed to generate fitness plan');
+            navigate('/login');
+          }
+        }
       } else {
-        const serverError = error.response?.data?.error || 'Failed to generate fitness plan. Please try again.';
+        const serverError = error.response?.data?.error || 'Failed to generate fitness plan.';
         setError(
           serverError.includes('Gemini API failed') 
-            ? 'Fitness plan generation service is temporarily unavailable. Using default tasks.'
+            ? 'Fitness plan generation service is unavailable. Using default tasks.'
             : serverError.includes('parse JSON') 
             ? 'Unable to generate tasks due to API response. Using default tasks.'
             : serverError.includes('value too long') 
@@ -80,12 +117,11 @@ const FitnessForm = ({ onPlanGenerated }) => {
     if (!generatedTasks) return;
     setIsAccepting(true);
     try {
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('accessToken');
       if (!token) {
         navigate('/login');
         return;
       }
-      // Post each task to /api/tasks/list/
       for (const task of generatedTasks) {
         await axios.post('http://localhost:8000/api/tasks/list/', {
           title: task.title,
@@ -93,14 +129,38 @@ const FitnessForm = ({ onPlanGenerated }) => {
           due_date: task.due_date,
           is_completed: task.is_completed
         }, {
-          headers: { Authorization: `Token ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
         });
       }
       alert('Fitness plan accepted and tasks added!');
       navigate('/actions');
     } catch (error) {
       console.error('Error accepting plan:', error);
-      alert('Failed to accept plan.');
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            for (const task of generatedTasks) {
+              await axios.post('http://localhost:8000/api/tasks/list/', {
+                title: task.title,
+                category: task.category,
+                due_date: task.due_date,
+                is_completed: task.is_completed
+              }, {
+                headers: { Authorization: `Bearer ${newToken}` },
+              });
+            }
+            alert('Fitness plan accepted and tasks added!');
+            navigate('/actions');
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            alert('Failed to accept plan.');
+            navigate('/login');
+          }
+        }
+      } else {
+        alert('Failed to accept plan.');
+      }
     } finally {
       setIsAccepting(false);
     }

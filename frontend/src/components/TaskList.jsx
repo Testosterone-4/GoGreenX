@@ -1,49 +1,106 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ListGroup, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
   const [tasks, setTasks] = useState(initialTasks || []);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) throw new Error('No refresh token found');
+      const response = await axios.post('http://localhost:8000/auth/jwt/refresh/', {
+        refresh: refreshToken
+      });
+      localStorage.setItem('accessToken', response.data.access);
+      return response.data.access;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      navigate('/login');
+      return null;
+    }
+  };
 
   const fetchTasks = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No token found');
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
       const response = await axios.get('http://localhost:8000/api/tasks/list/', {
-        headers: { Authorization: `Token ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Fetched Tasks:', response.data);
       setTasks(response.data);
       setError(null);
     } catch (error) {
       console.error('Error fetching tasks:', error);
-      setError(error.response?.status === 404 ? 'Tasks endpoint not found. Please contact support.' : 'Failed to fetch tasks');
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            setTasks(response.data);
+            setError(null);
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            setError(retryError.response?.data?.error || 'Failed to fetch tasks');
+            navigate('/login');
+          }
+        }
+      } else {
+        setError(error.response?.data?.error || 'Failed to fetch tasks');
+      }
     }
   };
 
   const handleToggleComplete = async (taskId, isCompleted) => {
     try {
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
       const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
         is_completed: !isCompleted,
       }, {
-        headers: { Authorization: `Token ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(tasks.map(task => task.id === taskId ? response.data : task));
       if (onUpdateTask) onUpdateTask(response.data);
       setError(null);
     } catch (error) {
       console.error('Error updating task:', error);
-      setError('Failed to update task');
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+              is_completed: !isCompleted,
+            }, {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            setTasks(tasks.map(task => task.id === taskId ? response.data : task));
+            if (onUpdateTask) onUpdateTask(response.data);
+            setError(null);
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            setError(retryError.response?.data?.error || 'Failed to update task');
+            navigate('/login');
+          }
+        }
+      } else {
+        setError(error.response?.data?.error || 'Failed to update task');
+      }
     }
   };
 
-  // Group tasks by due_date and use only weekday name
   const groupedTasks = tasks.reduce((acc, task) => {
     const date = new Date(task.due_date);
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-    const key = `${dayName}|${task.due_date}`; // Unique key to avoid date conflicts
+    const key = `${dayName}|${task.due_date}`;
     if (!acc[key]) {
       acc[key] = { dayName, tasks: [] };
     }
@@ -51,16 +108,16 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     return acc;
   }, {});
 
-  // Sort tasks within each day: exercise first, then nutrition
   Object.keys(groupedTasks).forEach(key => {
     groupedTasks[key].tasks.sort((a, b) => {
-      if (a.category === 'exercise' && b.category === 'nutrition') return -1;
-      if (a.category === 'nutrition' && b.category === 'exercise') return 1;
+      if (a.category === 'exercise' && b.category !== 'exercise') return -1;
+      if (b.category === 'exercise' && a.category !== 'exercise') return 1;
+      if (a.category === 'nutrition' && b.category === 'sustainability') return -1;
+      if (b.category === 'nutrition' && a.category === 'sustainability') return 1;
       return 0;
     });
   });
 
-  // Sort days chronologically
   const sortedDays = Object.keys(groupedTasks).sort((a, b) => {
     const dateA = new Date(a.split('|')[1]);
     const dateB = new Date(b.split('|')[1]);
@@ -73,7 +130,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     } else {
       setTasks(initialTasks);
     }
-  }, [initialTasks]);
+  }, [initialTasks, navigate]);
 
   return (
     <div className="mt-4">
