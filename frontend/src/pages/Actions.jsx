@@ -66,7 +66,7 @@ const Actions = () => {
 
   return (
     <>
-      <div className="mt-5 container">
+      <div className="mt-5 container" style={{ paddingTop: '50px'}}>
         <h3>Add a Custom Task</h3>
         <form onSubmit={handleCustomTaskSubmit}>
           <div className="mb-2">
