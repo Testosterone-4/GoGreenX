@@ -50,8 +50,8 @@ const Training = () => {
   const currentExercises = validExercises.slice(startIndex, endIndex);
 
   return (
-    <div className="container py-4">
-      <h2 className="text-center mb-4 text-success fw-bold">Training Exercises</h2>
+    <div  className="container py-4">
+      <h2 className="text-center mb-4 text-success fw-bold" style={{ paddingTop: '50px'}}>Training Exercises</h2>
 
       {loading ? (
         <div className="text-center my-5">

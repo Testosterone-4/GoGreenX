@@ -68,7 +68,7 @@ const Nutrition = () => {
 
   return (
     <div className="container py-4">
-      <h1 className="display-5 mb-4 text-center">Nutrition Library</h1>
+      <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '50px'}}>Nutrition Library</h1>
 
       {loading && <div className="text-center"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>}
       {error && <div className="alert alert-danger">{error}</div>}

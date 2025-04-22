@@ -1,108 +1,81 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import LoginModal from '../pages/Login';
-import AuthModals from '../pages/Register';
-import '../App.css';
-import '../assets/css/main.css';
+import React, {useState} from "react";
+import {NavLink} from "react-router-dom";
+import LoginModal from "../pages/Login";
+import AuthModals from "../pages/Register";
+import { Menu } from "lucide-react";
+import "../assets/css/navbarStyles.css";
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
 
+  const closeSidebar = () => {
+    const offcanvasEl = document.getElementById("sidebarMenu");
+    const offcanvasInstance =
+      window.bootstrap?.Offcanvas.getInstance(offcanvasEl);
+    offcanvasInstance?.hide();
+  };
+
   return (
     <>
       <nav className="navbar px-4 py-2 navbar-custom fixed-top">
         <div className="container-fluid d-flex justify-content-between align-items-center">
-          
           {/* Left: Logo + Main Navigation */}
           <div className="d-flex align-items-center">
-            <button
-              className="btn btn-dark d-lg-none me-2"
-              type="button"
-              data-bs-toggle="offcanvas"
-              data-bs-target="#sidebarMenu"
-              aria-controls="sidebarMenu"
+          <button
+  className="d-lg-none me-2 sidebar-toggle-btn"
+  type="button"
+  data-bs-toggle="offcanvas"
+  data-bs-target="#sidebarMenu"
+  aria-controls="sidebarMenu"
+>
+  <Menu size={28} color="#4CAF50" />
+</button>
+            <NavLink
+              className="navbar-brand fw-bold text-white px-3 py-2 rounded"
+              style={{backgroundColor: "rgba(0, 0, 0, 0.6)"}}
+              to="/"
             >
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <NavLink className="navbar-brand fw-bold text-white" to="/">
               GoGreenX
             </NavLink>
-            
+
             {/* Desktop Main Navigation */}
             <ul className="navbar-nav flex-row d-none d-lg-flex ms-4">
-              <li className="nav-item mx-2">
-                <NavLink 
-                  to="/training" 
-                  className={({ isActive }) => 
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
-                >
-                  Training
-                </NavLink>
-              </li>
-              <li className="nav-item mx-2">
-                <NavLink 
-                  to="/nutrition" 
-                  className={({ isActive }) => 
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
-                >
-                  Nutrition
-                </NavLink>
-              </li>
-              <li className="nav-item mx-2">
-                <NavLink 
-                  to="/forum" 
-                  className={({ isActive }) => 
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
-                >
-                  Forum
-                </NavLink>
-              </li>
+              {["training", "nutrition", "forum"].map((route) => (
+                <li className="nav-item mx-2" key={route}>
+                  <NavLink
+                    to={`/${route}`}
+                    className={({isActive}) =>
+                      `nav-link ${isActive ? "active" : ""}`
+                    }
+                  >
+                    {route.charAt(0).toUpperCase() + route.slice(1)}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Right: User Navigation + Auth */}
           <div className="d-flex align-items-center gap-3">
-            {/* User Navigation Links */}
             <div className="d-none d-lg-flex align-items-center me-4">
-              <NavLink 
-                to="/dashboard" 
-                className={({ isActive }) => 
-                  `nav-link ${isActive ? 'active' : ''}`
-                }
-              >
-                Dashboard
-              </NavLink>
-              <NavLink 
-                to="/actions" 
-                className={({ isActive }) => 
-                  `nav-link mx-3 ${isActive ? 'active' : ''}`
-                }
-              >
-                Actions
-              </NavLink>
-              <NavLink 
-                to="/fitness-plan" 
-                className={({ isActive }) => 
-                  `nav-link ${isActive ? 'active' : ''}`
-                }
-              >
-                Fitness Plan
-              </NavLink>
-              <NavLink 
-                to="/profile" 
-                className={({ isActive }) => 
-                  `nav-link mx-3 ${isActive ? 'active' : ''}`
-                }
-              >
-                Profile
-              </NavLink>
+              {["dashboard", "actions", "fitness-plan", "profile"].map(
+                (route) => (
+                  <NavLink
+                    key={route}
+                    to={`/${route}`}
+                    className={({isActive}) =>
+                      `nav-link mx-2 ${isActive ? "active" : ""}`
+                    }
+                  >
+                    {route
+                      .replace("-", " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                  </NavLink>
+                )
+              )}
             </div>
 
-            {/* Auth and Language */}
             <span className="text-white">EN</span>
             <button
               className="btn btn-link text-white text-decoration-none"
@@ -126,9 +99,12 @@ const Navbar = () => {
           tabIndex="-1"
           id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel"
+          style={{height: "100vh"}}
         >
           <div className="offcanvas-header">
-            <h5 className="offcanvas-title" id="sidebarMenuLabel">GoGreenX</h5>
+            <h5 className="offcanvas-title" id="sidebarMenuLabel">
+              GoGreenX
+            </h5>
             <button
               type="button"
               className="btn-close btn-close-white"
@@ -138,90 +114,36 @@ const Navbar = () => {
           </div>
           <div className="offcanvas-body">
             <ul className="nav flex-column">
-              <li className="nav-item">
-                <NavLink 
-                  to="/training" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Training
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/nutrition" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Nutrition
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/forum" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Forum
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/dashboard" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Dashboard
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/actions" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Actions
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/fitness-plan" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Fitness Plan
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink 
-                  to="/profile" 
-                  className={({ isActive }) => 
-                    `sidebar-link nav-link ${isActive ? 'active' : ''}`
-                  }
-                  data-bs-dismiss="offcanvas"
-                >
-                  Profile
-                </NavLink>
-              </li>
+              {[
+                "training",
+                "nutrition",
+                "forum",
+                "dashboard",
+                "actions",
+                "fitness-plan",
+                "profile",
+              ].map((route) => (
+                <li className="nav-item" key={route}>
+                  <NavLink
+                    to={`/${route}`}
+                    className={({isActive}) =>
+                      `sidebar-link nav-link ${isActive ? "active" : ""}`
+                    }
+                    onClick={closeSidebar}
+                  >
+                    {route
+                      .replace("-", " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                  </NavLink>
+                </li>
+              ))}
               <hr className="bg-secondary my-3" />
               <li className="nav-item">
                 <button
                   className="sidebar-link nav-link btn btn-link"
                   onClick={() => {
                     setShowLogin(true);
-                    document.querySelector('[data-bs-dismiss="offcanvas"]').click();
+                    closeSidebar();
                   }}
                 >
                   Login
@@ -232,7 +154,7 @@ const Navbar = () => {
                   className="sidebar-link nav-link btn btn-link"
                   onClick={() => {
                     setShowRegister(true);
-                    document.querySelector('[data-bs-dismiss="offcanvas"]').click();
+                    closeSidebar();
                   }}
                 >
                   Register
@@ -244,9 +166,12 @@ const Navbar = () => {
       </nav>
 
       <LoginModal show={showLogin} handleClose={() => setShowLogin(false)} />
-      <AuthModals show={showRegister} handleClose={() => setShowRegister(false)} />
+      <AuthModals
+        show={showRegister}
+        handleClose={() => setShowRegister(false)}
+      />
     </>
   );
-}
+};
 
 export default Navbar;
