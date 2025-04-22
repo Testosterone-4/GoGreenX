@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import LoginModal from '../pages/Login';
 import AuthModals from '../pages/Register';
@@ -8,28 +8,10 @@ import '../assets/css/main.css';
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Simulated login state
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 170) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   return (
     <>
-      <nav className={scrolled ? "scrolled px-4 py-2 fixed-top" : "test px-4 py-2 fixed-top"}>
+      <nav className="navbar px-4 py-2 navbar-custom fixed-top">
         <div className="container-fluid d-flex justify-content-between align-items-center">
           
           {/* Left: Logo + Main Navigation */}
@@ -84,30 +66,57 @@ const Navbar = () => {
 
           {/* Right: User Navigation + Auth */}
           <div className="d-flex align-items-center gap-3">
-            {/* Show Login/Register for logged-in users */}
-            {isLoggedIn ? (
-              <>
-                <button
-                  className="btn btn-link text-white text-decoration-none"
-                  onClick={() => setShowLogin(true)}
-                >
-                  Login
-                </button>
-                <button
-                  className="btn btn-link text-white text-decoration-none"
-                  onClick={() => setShowRegister(true)}
-                >
-                  Register
-                </button>
-              </>
-            ) : (
-              <button
-                className="btn btn-link text-white text-decoration-none"
-                onClick={() => setIsLoggedIn(false)} // Simulate logout
+            {/* User Navigation Links */}
+            <div className="d-none d-lg-flex align-items-center me-4">
+              <NavLink 
+                to="/dashboard" 
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? 'active' : ''}`
+                }
               >
-                Logout
-              </button>
-            )}
+                Dashboard
+              </NavLink>
+              <NavLink 
+                to="/actions" 
+                className={({ isActive }) => 
+                  `nav-link mx-3 ${isActive ? 'active' : ''}`
+                }
+              >
+                Actions
+              </NavLink>
+              <NavLink 
+                to="/fitness-plan" 
+                className={({ isActive }) => 
+                  `nav-link ${isActive ? 'active' : ''}`
+                }
+              >
+                Fitness Plan
+              </NavLink>
+              <NavLink 
+                to="/profile" 
+                className={({ isActive }) => 
+                  `nav-link mx-3 ${isActive ? 'active' : ''}`
+                }
+              >
+                Profile
+              </NavLink>
+            </div>
+
+            {/* Auth and Language */}
+            <span className="text-white">EN</span>
+            <button
+              className="btn btn-link text-white text-decoration-none"
+              onClick={() => setShowLogin(true)}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-link text-white text-decoration-none"
+              onClick={() => setShowRegister(true)}
+            >
+              Register
+            </button>
+            <button className="btn btn-light">Start now →</button>
           </div>
         </div>
 
