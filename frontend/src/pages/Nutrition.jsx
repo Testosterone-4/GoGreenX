@@ -68,12 +68,12 @@ const Nutrition = () => {
 
   return (
     <div className="container py-4">
-      <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '50px'}}>Nutrition Library</h1>
+      {/* <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '80px'}}>Nutrition Library</h1> */}
 
       {loading && <div className="text-center"><div className="spinner-border text-primary" role="status"><span className="visually-hidden">Loading...</span></div></div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <div className="row">
+      <div className="row" style={{ paddingTop: '80px'}}>
         {meals.map((meal) => (
           <div key={meal.idMeal} className="col-md-6 mb-4">
             <div className="card h-100 p-3" onClick={() => handleMealClick(meal)} style={{ cursor: 'pointer' }}>

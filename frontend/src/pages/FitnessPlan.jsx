@@ -70,7 +70,7 @@ const FitnessPlan = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="display-5 mb-4 text-center">Fitness Plan</h1>
+      <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '80px'}}>Fitness Plan</h1>
       {error && <div className="alert alert-danger">{error}</div>}
       <FitnessForm onPlanGenerated={handlePlanGenerated} />
       <TaskList tasks={tasks} />

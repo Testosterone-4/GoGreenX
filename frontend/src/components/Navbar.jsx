@@ -3,6 +3,7 @@ import {NavLink} from "react-router-dom";
 import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
 import { Menu } from "lucide-react";
+import logo from '../assets/images/gogreenx_logo.png';
 import "../assets/css/navbarStyles.css";
 
 const Navbar = () => {
@@ -32,11 +33,11 @@ const Navbar = () => {
   <Menu size={28} color="#4CAF50" />
 </button>
             <NavLink
-              className="navbar-brand fw-bold text-white px-3 py-2 rounded"
-              style={{backgroundColor: "rgba(0, 0, 0, 0.6)"}}
+              className="navbar-brand fw-bold px-3 py-2 rounded"
               to="/"
             >
-              GoGreenX
+              <img src={logo} alt="logo" style={{ width: '70px', height: '70px' }} />
+
             </NavLink>
 
             {/* Desktop Main Navigation */}

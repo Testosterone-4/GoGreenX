@@ -9,7 +9,7 @@ const Dashboard = () => {
 
   return (
     <div className="container py-4">
-      <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '50px'}}>Your Dashboard</h1>
+      <h1 className="display-5 mb-4 text-center" style={{ paddingTop: '90px'}}>Your Dashboard</h1>
       <div className="row">
         <div className="col-md-4 mb-4">
           <div className="card p-3">

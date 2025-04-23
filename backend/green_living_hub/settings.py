@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'sustainability.apps.SustainabilityConfig',
     'gamification.apps.GamificationConfig',
     'tasks.apps.TasksConfig',
-    'blog',
 ]
 
 MIDDLEWARE = [
