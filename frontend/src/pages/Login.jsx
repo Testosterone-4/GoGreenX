@@ -157,6 +157,15 @@ const LoginModal = ({ show, handleClose }) => {
           'Login failed. Please check your credentials.'
         );
       }
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('accessToken', data.access);
+        localStorage.setItem('refreshToken', data.refresh);
+        setIsSuccess(true);
+        
+        // ✅ Force page refresh to update navbar
+        window.location.reload();
+      }
 
       const data = await response.json();
       localStorage.setItem('accessToken', data.access);
