@@ -121,7 +121,7 @@ const Navbar = () => {
 
             <div className="dropdown">
               <button
-                className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
+                className="btn btn-outline-dark dropdown-toggle d-flex align-items-center"
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
@@ -195,7 +195,7 @@ const Navbar = () => {
                   Login
                 </button>
                 <button
-                  className="navbar-auth-btn"
+                  className="btn btn-outline-info navbar-register-btn"
                   onClick={() => setShowRegister(true)}
                 >
                   Register

@@ -30,7 +30,6 @@
 .navbar-custom .nav-link:hover,
 .navbar-custom .nav-link.active {
   color: var(--primary-green);
-  font-weight: bold;
   text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
 }
 
@@ -136,7 +135,7 @@
   background-color: #2e7d32;
 }
 .navbar-auth-btn {
-  color: white !important;
+  color: var(--primary-green) !important;
   background-color: transparent;
   border: 1px solid var(--primary-green);
   padding: 6px 14px;
@@ -148,6 +147,13 @@
   color: rgb(214, 8, 8) !important;
   background-color: transparent;
   border: 1px solid rgb(214, 8, 8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.navbar-register-btn {
+  background-color: transparent;
   padding: 6px 14px;
   border-radius: 20px;
   font-weight: 500;
