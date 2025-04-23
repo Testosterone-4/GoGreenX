@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import exercisesData from "../data/exercises.json";
 import "../assets/css/trainingStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,7 +7,7 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import { motion } from "framer-motion";
 
 const Training = () => {
-  const Motion = motion.div
+  const Motion = motion.div;
   const [validExercises, setValidExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedExercise, setSelectedExercise] = useState(null);
@@ -25,33 +25,35 @@ const Training = () => {
   useEffect(() => {
     const filterValidExercises = async () => {
       setLoading(true);
-      const filtered = [];
 
-      for (const exercise of exercisesData) {
-        const imagePath = `/sample/${exercise.gifUrl}`;
-        const exists = await checkImageExists(imagePath);
-        if (exists) filtered.push(exercise);
-      }
+      // Run all checks in parallel
+      const checks = await Promise.all(
+        exercisesData.map(async (exercise) => {
+          const imagePath = `/sample/${exercise.gifUrl}`;
+          const exists = await checkImageExists(imagePath);
+          return exists ? exercise : null;
+        })
+      );
 
-      setValidExercises(filtered);
+      // Filter out nulls (failed image checks)
+      setValidExercises(checks.filter(Boolean));
       setLoading(false);
     };
 
     filterValidExercises();
   }, []);
 
-  const handlePageClick = (data) => {
-    setCurrentPage(data.selected);
-  };
+  const handlePageClick = (data) => setCurrentPage(data.selected);
 
   const totalPages = Math.ceil(validExercises.length / exercisesPerPage);
-  const startIndex = currentPage * exercisesPerPage;
-  const endIndex = startIndex + exercisesPerPage;
-  const currentExercises = validExercises.slice(startIndex, endIndex);
+  const currentExercises = useMemo(() => {
+    const start = currentPage * exercisesPerPage;
+    return validExercises.slice(start, start + exercisesPerPage);
+  }, [validExercises, currentPage]);
 
   return (
-    <div  className="container py-4">
-      <h2 className="text-center mb-4 text-success fw-bold" style={{ paddingTop: '50px'}}>Training Exercises</h2>
+    <div className="container py-4">
+      <h2 className="text-center mb-4 text-success fw-bold">Training Exercises</h2>
 
       {loading ? (
         <div className="text-center my-5">
@@ -61,7 +63,7 @@ const Training = () => {
         <>
           <div className="row g-4">
             {currentExercises.map((exercise) => (
-              <motion.div
+              <Motion
                 key={exercise.exerciseId}
                 className="col-6 col-md-3"
                 whileHover={{ scale: 1.03 }}
@@ -96,7 +98,7 @@ const Training = () => {
                     </Button>
                   </div>
                 </div>
-              </motion.div>
+              </Motion>
             ))}
           </div>
 
