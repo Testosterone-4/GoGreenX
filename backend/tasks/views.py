@@ -7,6 +7,8 @@ from .models import Task
 from .services import generate_fitness_plan
 from .serializers import TaskSerializer, FitnessInputSerializer
 import logging
+from django.utils import timezone
+from datetime import timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,17 @@ class FitnessPlanView(APIView):
         user = request.user
         data = request.data
         try:
+            # Check for recent plan generation (within 60 seconds)
+            recent_tasks = Task.objects.filter(
+                user=user,
+                created_at__gte=timezone.now() - timedelta(seconds=60)
+            )
+            if recent_tasks.exists():
+                logger.warning(f"Duplicate plan generation attempt by {user.email} within 60 seconds")
+                return Response({
+                    'error': 'A fitness plan was recently generated. Please wait a moment before trying again.'
+                }, status=status.HTTP_429_TOO_MANY_REQUESTS)
+
             fitness_input, created = FitnessInput.objects.update_or_create(
                 user=user,
                 defaults={

@@ -34,7 +34,7 @@ const FitnessPlan = () => {
       const response = await axios.get('http://localhost:8000/api/tasks/list/', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Fetched Tasks:', response.data);
+      console.log('Fetched Tasks:', response.data); // Log once here
       setTasks(response.data);
       setError(null);
     } catch (error) {
@@ -46,6 +46,7 @@ const FitnessPlan = () => {
             const response = await axios.get('http://localhost:8000/api/tasks/list/', {
               headers: { Authorization: `Bearer ${newToken}` },
             });
+            console.log('Fetched Tasks (Retry):', response.data);
             setTasks(response.data);
             setError(null);
           } catch (retryError) {
@@ -61,7 +62,7 @@ const FitnessPlan = () => {
   };
 
   const handlePlanGenerated = (data) => {
-    setTasks(data.tasks);
+    setTasks(data.tasks); // Update tasks from FitnessForm
   };
 
   useEffect(() => {
@@ -74,7 +75,9 @@ const FitnessPlan = () => {
       <h1 className="display-5 mb-4 text-center">Fitness Plan</h1>
       {error && <div className="alert alert-danger">{error}</div>}
       <FitnessForm onPlanGenerated={handlePlanGenerated} />
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} onUpdateTask={(updatedTask) => {
+        setTasks(tasks.map(task => task.id === updatedTask.id ? updatedTask : task));
+      }} />
     </div>
   );
 };
