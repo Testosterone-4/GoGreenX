@@ -1,6 +1,6 @@
 /* Navbar Styles */
 .navbar-custom {
-  background: rgba(255, 255, 255, 0.1);
+  background-color: rgba(227, 219, 219, 0.418);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -23,12 +23,16 @@
   text-transform: uppercase;
   font-weight: 500;
   transition: color var(--transition-speed);
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3); /* Adds contrast on bright background */
 }
+
 
 .navbar-custom .nav-link:hover,
 .navbar-custom .nav-link.active {
   color: var(--primary-green);
+  text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.4);
 }
+
 
 .navbar-custom .btn-link {
   color: var(--dark-green) !important;
@@ -83,6 +87,7 @@
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   transition: background 0.3s, color 0.3s;
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5); /* Adds visibility */
 }
 
 .sidebar-link.nav-link:hover {
@@ -92,9 +97,10 @@
 
 .sidebar-link.nav-link.active {
   background-color: #28a745;
-  color: #fff !important;
+  color: #ffffff !important;
   font-weight: bold;
 }
+
 
 /* Auth buttons */
 .sidebar-link.btn-link {
@@ -113,4 +119,52 @@
 /* Close button spacing */
 .offcanvas-header .btn-close {
   margin-top: 0.25rem;
+}
+.navbar-user-greeting {
+  background-color: var(--primary-green);
+  color: white;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  margin-right: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-user-greeting:hover {
+  background-color: #2e7d32;
+}
+.navbar-auth-btn {
+  color: var(--primary-green) !important;
+  background-color: transparent;
+  border: 1px solid var(--primary-green);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.navbar-logout-btn {
+  color: rgb(214, 8, 8) !important;
+  background-color: transparent;
+  border: 1px solid rgb(214, 8, 8);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.navbar-register-btn {
+  background-color: transparent;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.navbar-logout-btn:hover {
+  background-color: rgb(214, 8, 8);
+  color: #fff !important;
+}
+
+.navbar-auth-btn:hover {
+  background-color: var(--primary-green);
+  color: #fff !important;
 }

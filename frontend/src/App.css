@@ -1,0 +1,17 @@
+body:not(.no-navbar-padding) {
+  padding-top: 80px;
+}
+
+body:not(.no-navbar-padding) .hero-section {
+  padding-top: 0 !important;
+}
+
+@media (max-width: 768px) {
+  body:not(.no-navbar-padding) {
+      padding-top: 100px;
+  }
+
+  body:not(.no-navbar-padding) .hero-section {
+      padding-top: 0 !important;
+  }
+}

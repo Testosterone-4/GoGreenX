@@ -6,10 +6,11 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import "../assets/css/home.css";
 import video from "../assets/videos/videoplayback.mp4";
-import Navbar from "../components/Navbar";
 
 const Home = () => {
+  // eslint-disable-next-line no-unused-vars
   const [activeSection, setActiveSection] = useState("training");
+  // eslint-disable-next-line no-unused-vars
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -85,7 +86,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="min-vh-50 bg-gray-50 pt-56">
+      <div className="min-vh-50 bg-gray-50 pt-56 ">
         {/* Hero Section */}
         <section className="hero-section d-flex align-items-center text-white position-relative overflow-hidden">
           <div className="container position-relative z-2 py-5">
