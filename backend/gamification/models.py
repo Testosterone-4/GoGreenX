@@ -1,7 +1,8 @@
 import uuid
 from django.db import models
-
+from django.core.validators import MinValueValidator
 from users.models import User
+
 
 # Create your models here.
 class Badge(models.Model):
@@ -9,7 +10,7 @@ class Badge(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     icon = models.URLField()
-    points_required = models.IntegerField()
+    points_required = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.name
@@ -28,12 +29,12 @@ class UserBadge(models.Model):
 
 class UserPoints(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='points_account')
-    total_points = models.IntegerField(default=0)
+    total_points = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     last_updated = models.DateTimeField(auto_now=True)
 
 class PointsTransaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='points_transactions')
-    amount = models.IntegerField()
+    amount = models.IntegerField(validators=[MinValueValidator(0)])
     source = models.CharField(max_length=20, choices=[
         ('task', 'Task Completion'),
         ('sustainability', 'Sustainability Action'),
