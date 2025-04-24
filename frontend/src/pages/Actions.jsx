@@ -41,7 +41,7 @@ const Actions = () => {
       const response = await axios.get('http://localhost:8000/api/tasks/list/', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Fetched Tasks:', response.data);
+      console.log('Fetched Tasks:', response.data); // Log once
       setTasks(response.data);
       setTaskError(null);
     } catch (error) {
@@ -53,6 +53,7 @@ const Actions = () => {
             const response = await axios.get('http://localhost:8000/api/tasks/list/', {
               headers: { Authorization: `Bearer ${newToken}` },
             });
+            console.log('Fetched Tasks (Retry):', response.data);
             setTasks(response.data);
             setTaskError(null);
           } catch (retryError) {

@@ -13,8 +13,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [warning, setWarning] = useState(null);
-  const [generatedTasks, setGeneratedTasks] = useState(null);
-  const [isAccepting, setIsAccepting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false); // Track submission
   const navigate = useNavigate();
 
   const refreshToken = async () => {
@@ -48,9 +47,11 @@ const FitnessForm = ({ onPlanGenerated }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitted) return; // Prevent multiple submissions
     setIsLoading(true);
     setError(null);
     setWarning(null);
+    setIsSubmitted(true); // Mark as submitted
     try {
       let token = localStorage.getItem('accessToken');
       if (!token) {
@@ -60,17 +61,17 @@ const FitnessForm = ({ onPlanGenerated }) => {
       const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('API Response:', response.data);
+      console.log('Generated Plan:', response.data);
       if (onPlanGenerated) {
         onPlanGenerated({
           tasks: response.data.tasks,
           fitness_input: response.data.fitness_input
         });
       }
-      setGeneratedTasks(response.data.tasks);
       if (response.data.tasks.some(task => task.title.includes('Walk 30 minutes'))) {
         setWarning('Fitness plan generation service is unavailable. Using default tasks.');
       }
+      navigate('/actions'); // Redirect to /actions after generation
     } catch (error) {
       console.error('Error generating plan:', error);
       if (error.response?.status === 401) {
@@ -86,10 +87,10 @@ const FitnessForm = ({ onPlanGenerated }) => {
                 fitness_input: response.data.fitness_input
               });
             }
-            setGeneratedTasks(response.data.tasks);
             if (response.data.tasks.some(task => task.title.includes('Walk 30 minutes'))) {
               setWarning('Fitness plan generation service is unavailable. Using default tasks.');
             }
+            navigate('/actions');
           } catch (retryError) {
             console.error('Retry failed:', retryError);
             setError(retryError.response?.data?.error || 'Failed to generate fitness plan');
@@ -110,59 +111,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
       }
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleAcceptPlan = async () => {
-    if (!generatedTasks) return;
-    setIsAccepting(true);
-    try {
-      let token = localStorage.getItem('accessToken');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-      for (const task of generatedTasks) {
-        await axios.post('http://localhost:8000/api/tasks/list/', {
-          title: task.title,
-          category: task.category,
-          due_date: task.due_date,
-          is_completed: task.is_completed
-        }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-      alert('Fitness plan accepted and tasks added!');
-      navigate('/actions');
-    } catch (error) {
-      console.error('Error accepting plan:', error);
-      if (error.response?.status === 401) {
-        const newToken = await refreshToken();
-        if (newToken) {
-          try {
-            for (const task of generatedTasks) {
-              await axios.post('http://localhost:8000/api/tasks/list/', {
-                title: task.title,
-                category: task.category,
-                due_date: task.due_date,
-                is_completed: task.is_completed
-              }, {
-                headers: { Authorization: `Bearer ${newToken}` },
-              });
-            }
-            alert('Fitness plan accepted and tasks added!');
-            navigate('/actions');
-          } catch (retryError) {
-            console.error('Retry failed:', retryError);
-            alert('Failed to accept plan.');
-            navigate('/login');
-          }
-        }
-      } else {
-        alert('Failed to accept plan.');
-      }
-    } finally {
-      setIsAccepting(false);
+      setIsSubmitted(false); // Reset submission state
     }
   };
 
@@ -182,7 +131,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
             value={formData.weight}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={isLoading || isSubmitted}
           />
         </div>
         <div className="mb-3">
@@ -195,7 +144,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
             value={formData.height}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={isLoading || isSubmitted}
           />
         </div>
         <div className="mb-3">
@@ -206,7 +155,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
             name="sex"
             value={formData.sex}
             onChange={handleChange}
-            disabled={isLoading}
+            disabled={isLoading || isSubmitted}
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
@@ -222,7 +171,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
             value={formData.age}
             onChange={handleChange}
             required
-            disabled={isLoading}
+            disabled={isLoading || isSubmitted}
           />
         </div>
         <div className="mb-3">
@@ -233,7 +182,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
             name="goal"
             value={formData.goal}
             onChange={handleChange}
-            disabled={isLoading}
+            disabled={isLoading || isSubmitted}
           >
             <option value="bulking">Bulking</option>
             <option value="dieting">Dieting</option>
@@ -242,20 +191,11 @@ const FitnessForm = ({ onPlanGenerated }) => {
         <button
           type="submit"
           className="btn btn-primary w-100"
-          disabled={isLoading}
+          disabled={isLoading || isSubmitted}
         >
           {isLoading ? 'Generating Plan...' : 'Generate Plan'}
         </button>
       </form>
-      {generatedTasks && (
-        <button
-          className="btn btn-success w-100 mt-3"
-          onClick={handleAcceptPlan}
-          disabled={isAccepting}
-        >
-          {isAccepting ? 'Accepting Plan...' : 'Accept Plan'}
-        </button>
-      )}
     </div>
   );
 };

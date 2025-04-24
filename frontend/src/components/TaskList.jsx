@@ -33,7 +33,6 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
       const response = await axios.get('http://localhost:8000/api/tasks/list/', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Fetched Tasks:', response.data);
       setTasks(response.data);
       setError(null);
     } catch (error) {
