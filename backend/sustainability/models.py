@@ -10,6 +10,7 @@ class SustainabilityAction(models.Model):
     value = models.FloatField()  # e.g., kg, km
     date = models.DateTimeField(auto_now_add=True)
     points_earned = models.IntegerField(default=0)
+    points_processed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.action_type} by {self.user.username}"
