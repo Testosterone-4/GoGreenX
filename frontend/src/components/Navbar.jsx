@@ -3,11 +3,14 @@ import {NavLink, useNavigate} from "react-router-dom";
 import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
 import {Menu} from "lucide-react";
-import {motion} from "framer-motion";
+import { motion} from "framer-motion";
 import logo from "../assets/images/gogreenx_logo.png";
 import "../assets/css/navbarStyles.css";
 import axios from "axios";
 import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -20,9 +23,14 @@ const Navbar = () => {
 
   const closeSidebar = () => {
     const offcanvasEl = document.getElementById("sidebarMenu");
-    const offcanvasInstance =
-      window.bootstrap?.Offcanvas.getInstance(offcanvasEl);
-    offcanvasInstance?.hide();
+
+    if (offcanvasEl) {
+      // Try using Bootstrap's JS instance method first
+      const offcanvasInstance =
+        window.bootstrap?.Offcanvas.getInstance(offcanvasEl) ||
+        new window.bootstrap.Offcanvas(offcanvasEl);
+      offcanvasInstance.hide();
+    }
   };
 
   const getUserInfo = async () => {
@@ -284,40 +292,40 @@ const Navbar = () => {
               ))}
 
               <li className="nav-item mt-3">
-              <div className="dropdown">
-              <button
-                className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FaGlobe style={{marginRight: "8px"}} />
-                {language}
-              </button>
+                <div className="dropdown">
+                  <button
+                    className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <FaGlobe style={{marginRight: "8px"}} />
+                    {language}
+                  </button>
 
-              <ul className="dropdown-menu dropdown-menu-dark">
-                <li>
-                  <button
-                    className={`dropdown-item ${
-                      language === "EN" ? "active" : ""
-                    }`}
-                    onClick={() => handleLanguageChange("EN")}
-                  >
-                    <FaFlagUsa style={{marginRight: "8px"}} /> EN
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${
-                      language === "AR" ? "active" : ""
-                    }`}
-                    onClick={() => handleLanguageChange("AR")}
-                  >
-                    <FaFlag style={{marginRight: "8px"}} /> AR
-                  </button>
-                </li>
-              </ul>
-            </div>
+                  <ul className="dropdown-menu dropdown-menu-dark">
+                    <li>
+                      <button
+                        className={`dropdown-item ${
+                          language === "EN" ? "active" : ""
+                        }`}
+                        onClick={() => handleLanguageChange("EN")}
+                      >
+                        <FaFlagUsa style={{marginRight: "8px"}} /> EN
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className={`dropdown-item ${
+                          language === "AR" ? "active" : ""
+                        }`}
+                        onClick={() => handleLanguageChange("AR")}
+                      >
+                        <FaFlag style={{marginRight: "8px"}} /> AR
+                      </button>
+                    </li>
+                  </ul>
+                </div>
               </li>
 
               <hr className="bg-secondary my-3" />
@@ -326,6 +334,7 @@ const Navbar = () => {
                 <li className="nav-item">
                   <button
                     className="sidebar-link nav-link btn btn-link"
+                    style={{color:"red"}}
                     onClick={logout}
                   >
                     Logout
@@ -338,7 +347,7 @@ const Navbar = () => {
                       className="sidebar-link nav-link btn btn-link"
                       onClick={() => {
                         setShowLogin(true);
-                        closeSidebar();
+                        setTimeout(() => closeSidebar(), 100);
                       }}
                     >
                       Login
