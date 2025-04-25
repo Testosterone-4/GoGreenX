@@ -58,6 +58,19 @@
 }
 
 /* Offcanvas sidebar glass effect */
+.custom-toggle {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.custom-toggle:hover {
+  background-color: #e8f5e9; /* soft green background on hover */
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.4);
+}
+
+.sidebar-toggle-btn {
+  z-index: 1051; /* make sure it stays above offcanvas if needed */
+}
+
 .offcanvas-start.text-bg-dark {
   backdrop-filter: blur(12px);
   background: rgba(20, 20, 20, 0.85) !important;
