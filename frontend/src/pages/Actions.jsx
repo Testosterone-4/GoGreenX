@@ -244,7 +244,7 @@ const Actions = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, [navigate]);
+  }, [navigate]);// eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="container mt-5">
