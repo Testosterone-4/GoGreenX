@@ -60,21 +60,40 @@ const Navbar = () => {
   };
 
   const isLoggedIn = !!user;
+  useEffect(() => {
+    const sidebar = document.getElementById("sidebarMenu");
+    const toggleBtn = document.querySelector(".sidebar-toggle-btn");
 
+    const handleShow = () => toggleBtn.classList.add("d-none");
+    const handleHide = () => toggleBtn.classList.remove("d-none");
+
+    if (sidebar) {
+      sidebar.addEventListener("shown.bs.offcanvas", handleShow);
+      sidebar.addEventListener("hidden.bs.offcanvas", handleHide);
+    }
+
+    return () => {
+      if (sidebar) {
+        sidebar.removeEventListener("shown.bs.offcanvas", handleShow);
+        sidebar.removeEventListener("hidden.bs.offcanvas", handleHide);
+      }
+    };
+  }, []);
   return (
     <>
       <nav className="navbar px-4 py-2 navbar-custom fixed-top">
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <button
-              className="d-lg-none me-2 sidebar-toggle-btn"
+              className="d-lg-none me-2 btn btn-light shadow-sm rounded-circle p-2 sidebar-toggle-btn custom-toggle"
               type="button"
               data-bs-toggle="offcanvas"
               data-bs-target="#sidebarMenu"
               aria-controls="sidebarMenu"
             >
-              <Menu size={28} color="#4CAF50" />
+              <Menu size={22} color="#4CAF50" />
             </button>
+
             <NavLink className="navbar-brand fw-bold px-3 py-2 rounded" to="/">
               <img
                 src={logo}
@@ -265,49 +284,40 @@ const Navbar = () => {
               ))}
 
               <li className="nav-item mt-3">
-                <div className="dropdown">
-                  <button
-                    className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      className="bi bi-globe me-1"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="..." />
-                    </svg>
-                    {language}
-                  </button>
+              <div className="dropdown">
+              <button
+                className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <FaGlobe style={{marginRight: "8px"}} />
+                {language}
+              </button>
 
-                  <ul className="dropdown-menu dropdown-menu-dark">
-                    <li>
-                      <button
-                        className={`dropdown-item ${
-                          language === "EN" ? "active" : ""
-                        }`}
-                        onClick={() => handleLanguageChange("EN")}
-                      >
-                        EN
-                      </button>
-                    </li>
-                    <li>
-                      <button
-                        className={`dropdown-item ${
-                          language === "AR" ? "active" : ""
-                        }`}
-                        onClick={() => handleLanguageChange("AR")}
-                      >
-                        AR
-                      </button>
-                    </li>
-                  </ul>
-                </div>
+              <ul className="dropdown-menu dropdown-menu-dark">
+                <li>
+                  <button
+                    className={`dropdown-item ${
+                      language === "EN" ? "active" : ""
+                    }`}
+                    onClick={() => handleLanguageChange("EN")}
+                  >
+                    <FaFlagUsa style={{marginRight: "8px"}} /> EN
+                  </button>
+                </li>
+                <li>
+                  <button
+                    className={`dropdown-item ${
+                      language === "AR" ? "active" : ""
+                    }`}
+                    onClick={() => handleLanguageChange("AR")}
+                  >
+                    <FaFlag style={{marginRight: "8px"}} /> AR
+                  </button>
+                </li>
+              </ul>
+            </div>
               </li>
 
               <hr className="bg-secondary my-3" />
