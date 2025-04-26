@@ -77,7 +77,8 @@ class TaskListView(APIView):
                 title=data['title'],
                 category=data['category'],
                 due_date=data['due_date'],
-                is_completed=False
+                is_completed=False,
+                points_rewarded=data.get('points_rewarded', 0),
             )
             logger.info(f"Created task '{task.title}' for {request.user.email}")
             return Response(TaskSerializer(task).data, status=status.HTTP_201_CREATED)

@@ -3,11 +3,17 @@ import {NavLink, useNavigate} from "react-router-dom";
 import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
 import {Menu} from "lucide-react";
-import {motion} from "framer-motion";
+import { motion} from "framer-motion";
 import logo from "../assets/images/gogreenx_logo.png";
 import "../assets/css/navbarStyles.css";
+
+import { useAuth } from '../contexts/AuthContext';
 import axios from "axios";
 import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -20,9 +26,14 @@ const Navbar = () => {
 
   const closeSidebar = () => {
     const offcanvasEl = document.getElementById("sidebarMenu");
-    const offcanvasInstance =
-      window.bootstrap?.Offcanvas.getInstance(offcanvasEl);
-    offcanvasInstance?.hide();
+
+    if (offcanvasEl) {
+      // Try using Bootstrap's JS instance method first
+      const offcanvasInstance =
+        window.bootstrap?.Offcanvas.getInstance(offcanvasEl) ||
+        new window.bootstrap.Offcanvas(offcanvasEl);
+      offcanvasInstance.hide();
+    }
   };
 
   const getUserInfo = async () => {
@@ -60,21 +71,40 @@ const Navbar = () => {
   };
 
   const isLoggedIn = !!user;
+  useEffect(() => {
+    const sidebar = document.getElementById("sidebarMenu");
+    const toggleBtn = document.querySelector(".sidebar-toggle-btn");
 
+    const handleShow = () => toggleBtn.classList.add("d-none");
+    const handleHide = () => toggleBtn.classList.remove("d-none");
+
+    if (sidebar) {
+      sidebar.addEventListener("shown.bs.offcanvas", handleShow);
+      sidebar.addEventListener("hidden.bs.offcanvas", handleHide);
+    }
+
+    return () => {
+      if (sidebar) {
+        sidebar.removeEventListener("shown.bs.offcanvas", handleShow);
+        sidebar.removeEventListener("hidden.bs.offcanvas", handleHide);
+      }
+    };
+  }, []);
   return (
     <>
       <nav className="navbar px-4 py-2 navbar-custom fixed-top">
         <div className="container-fluid d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <button
-              className="d-lg-none me-2 sidebar-toggle-btn"
+              className="d-lg-none me-2 btn btn-light shadow-sm rounded-circle p-2 sidebar-toggle-btn custom-toggle"
               type="button"
               data-bs-toggle="offcanvas"
               data-bs-target="#sidebarMenu"
               aria-controls="sidebarMenu"
             >
-              <Menu size={28} color="#4CAF50" />
+              <Menu size={22} color="#4CAF50" />
             </button>
+
             <NavLink className="navbar-brand fw-bold px-3 py-2 rounded" to="/">
               <img
                 src={logo}
@@ -84,10 +114,12 @@ const Navbar = () => {
             </NavLink>
           </div>
 
+          
           {/* Desktop nav items */}
           <div className="d-none d-lg-flex align-items-center gap-3 me-4">
             <ul className="navbar-nav flex-row me-3">
-              {["training", "nutrition", "forum"].map((route) => (
+              {["training", "nutrition", "community"].map((route) => (
+
                 <li className="nav-item mx-2" key={route}>
                   <NavLink
                     to={`/${route}`}
@@ -272,16 +304,7 @@ const Navbar = () => {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      className="bi bi-globe me-1"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="..." />
-                    </svg>
+                    <FaGlobe style={{marginRight: "8px"}} />
                     {language}
                   </button>
 
@@ -293,7 +316,7 @@ const Navbar = () => {
                         }`}
                         onClick={() => handleLanguageChange("EN")}
                       >
-                        EN
+                        <FaFlagUsa style={{marginRight: "8px"}} /> EN
                       </button>
                     </li>
                     <li>
@@ -303,7 +326,7 @@ const Navbar = () => {
                         }`}
                         onClick={() => handleLanguageChange("AR")}
                       >
-                        AR
+                        <FaFlag style={{marginRight: "8px"}} /> AR
                       </button>
                     </li>
                   </ul>
@@ -316,6 +339,7 @@ const Navbar = () => {
                 <li className="nav-item">
                   <button
                     className="sidebar-link nav-link btn btn-link"
+                    style={{color:"red"}}
                     onClick={logout}
                   >
                     Logout
@@ -328,7 +352,7 @@ const Navbar = () => {
                       className="sidebar-link nav-link btn btn-link"
                       onClick={() => {
                         setShowLogin(true);
-                        closeSidebar();
+                        setTimeout(() => closeSidebar(), 100);
                       }}
                     >
                       Login

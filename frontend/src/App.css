@@ -15,3 +15,47 @@ body:not(.no-navbar-padding) .hero-section {
       padding-top: 0 !important;
   }
 }
+.footer-link {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.hover-opacity {
+  transition: opacity 0.3s ease;
+}
+.hover-opacity:hover {
+  opacity: 0.7;
+}
+/* Base styles already applied from before */
+
+@media (max-width: 768px) {
+  footer {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  footer h4, footer h6 {
+    font-size: 1rem;
+  }
+
+  footer p, footer a, footer li {
+    font-size: 0.85rem;
+  }
+
+  footer img {
+    height: 35px !important;
+  }
+
+  .footer-link {
+    font-size: 0.85rem;
+  }
+
+  .hover-opacity svg {
+    font-size: 1rem;
+  }
+}

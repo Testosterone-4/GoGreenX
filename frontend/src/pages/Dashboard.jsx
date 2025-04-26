@@ -46,7 +46,7 @@ const Dashboard = () => {
       const token = localStorage.getItem("accessToken");
       const endpoints = [
         "/api/points/",
-        "/api/badges/",
+        "/api/my-badges/",
         "/api/leaderboard/",
         "/api/transactions/",
         "/api/notifications/",
@@ -74,6 +74,7 @@ const Dashboard = () => {
       setLoading(false);
     }
   };
+  console.log(dashboardData.badges);
 
   useEffect(() => {
     fetchDashboardData();
@@ -332,24 +333,24 @@ const Dashboard = () => {
               ) : (
                 <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3">
                   {dashboardData.badges.map((badge) => (
-                    <Col key={badge.id}>
+                    <Col key={badge.badge.id}>
                       <Card className="border-0 shadow-sm h-100">
                         <Card.Body className="text-center">
                           <img
-                            src={badge.icon}
-                            alt={badge.name}
+                            src={badge.badge.icon}
+                            alt={badge.badge.name}
                             className="img-fluid mb-2"
                             style={{ height: "80px" }}
                           />
-                          <h6 className="mb-1">{badge.name}</h6>
+                          <h6 className="mb-1">{badge.badge.name}</h6>
                           <small className="text-muted d-block">
-                            {badge.description}
+                            {badge.badge.description}
                           </small>
-                          {/* <small className="text-muted">
+                          <small className="text-muted">
                             Earned{" "}
                             {formatDistanceToNow(new Date(badge.awarded_at))}{" "}
                             ago
-                          </small> */}
+                          </small>
                         </Card.Body>
                       </Card>
                     </Col>
