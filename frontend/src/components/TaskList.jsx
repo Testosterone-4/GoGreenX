@@ -129,7 +129,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     } else {
       setTasks(initialTasks);
     }
-  }, [initialTasks, navigate]);
+  }, [initialTasks, navigate]);// eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="mt-4">

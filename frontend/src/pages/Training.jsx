@@ -8,11 +8,23 @@ import { motion } from "framer-motion";
 
 const Training = () => {
   const Motion = motion.div;
+
   const [validExercises, setValidExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const exercisesPerPage = 8;
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedMuscle, setSelectedMuscle] = useState("All");
+
+  const allTargetMuscles = useMemo(() => {
+    const muscles = new Set();
+    exercisesData.forEach((ex) => {
+      ex.targetMuscles.forEach((muscle) => muscles.add(muscle));
+    });
+    return ["All", ...Array.from(muscles)];
+  }, []);
 
   const checkImageExists = (src) =>
     new Promise((resolve) => {
@@ -25,8 +37,6 @@ const Training = () => {
   useEffect(() => {
     const filterValidExercises = async () => {
       setLoading(true);
-
-      // Run all checks in parallel
       const checks = await Promise.all(
         exercisesData.map(async (exercise) => {
           const imagePath = `/sample/${exercise.gifUrl}`;
@@ -34,8 +44,6 @@ const Training = () => {
           return exists ? exercise : null;
         })
       );
-
-      // Filter out nulls (failed image checks)
       setValidExercises(checks.filter(Boolean));
       setLoading(false);
     };
@@ -43,13 +51,27 @@ const Training = () => {
     filterValidExercises();
   }, []);
 
-  const handlePageClick = (data) => setCurrentPage(data.selected);
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchTerm, selectedMuscle]);
 
-  const totalPages = Math.ceil(validExercises.length / exercisesPerPage);
+  const filteredExercises = useMemo(() => {
+    return validExercises.filter((ex) => {
+      const matchesSearch = ex.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesMuscle =
+        selectedMuscle === "All" || ex.targetMuscles.includes(selectedMuscle);
+      return matchesSearch && matchesMuscle;
+    });
+  }, [validExercises, searchTerm, selectedMuscle]);
+
+  const totalPages = Math.ceil(filteredExercises.length / exercisesPerPage);
+
   const currentExercises = useMemo(() => {
     const start = currentPage * exercisesPerPage;
-    return validExercises.slice(start, start + exercisesPerPage);
-  }, [validExercises, currentPage]);
+    return filteredExercises.slice(start, start + exercisesPerPage);
+  }, [filteredExercises, currentPage]);
+
+  const handlePageClick = (data) => setCurrentPage(data.selected);
 
   return (
     <div className="container py-4">
@@ -61,6 +83,30 @@ const Training = () => {
         </div>
       ) : (
         <>
+          <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <input
+              type="text"
+              className="form-control me-2 mb-2"
+              style={{ maxWidth: "250px" }}
+              placeholder="Search by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+
+            <select
+              className="form-select mb-2"
+              style={{ maxWidth: "200px" }}
+              value={selectedMuscle}
+              onChange={(e) => setSelectedMuscle(e.target.value)}
+            >
+              {allTargetMuscles.map((muscle, idx) => (
+                <option key={idx} value={muscle}>
+                  {muscle.replace(/\b\w/g, (c) => c.toUpperCase())}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="row g-4">
             {currentExercises.map((exercise) => (
               <Motion
@@ -153,7 +199,11 @@ const Training = () => {
             <p><strong>Equipment:</strong> {selectedExercise.equipments.join(", ")}</p>
             <p><strong>Secondary Muscles:</strong> {selectedExercise.secondaryMuscles?.join(", ") || "N/A"}</p>
             <p><strong>Instructions:</strong></p>
-            <div>{selectedExercise.instructions?.map((step, i) => <p key={i}>{step}</p>)}</div>
+            <div>
+              {selectedExercise.instructions?.map((step, i) => (
+                <p key={i}>{step}</p>
+              ))}
+            </div>
           </Modal.Body>
         </Modal>
       )}
