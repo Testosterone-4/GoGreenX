@@ -9,6 +9,7 @@ from .serializers import TaskSerializer, FitnessInputSerializer
 import logging
 from django.utils import timezone
 from datetime import timedelta
+from rest_framework.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +77,8 @@ class TaskListView(APIView):
                 title=data['title'],
                 category=data['category'],
                 due_date=data['due_date'],
-                is_completed=False
+                is_completed=False,
+                points_rewarded=data.get('points_rewarded', 0),
             )
             logger.info(f"Created task '{task.title}' for {request.user.email}")
             return Response(TaskSerializer(task).data, status=status.HTTP_201_CREATED)
@@ -93,13 +95,33 @@ class TaskUpdateView(APIView):
     def patch(self, request, task_id):
         try:
             task = Task.objects.get(id=task_id, user=request.user)
-            task.is_completed = request.data.get('is_completed', task.is_completed)
-            task.save()
-            logger.info(f"Updated task '{task.title}' for {request.user.email}")
-            return Response(TaskSerializer(task).data)
         except Task.DoesNotExist:
             logger.error(f"Task not found: {task_id}")
             return Response({'error': 'Task not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = TaskSerializer(task, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            logger.info(f"Updated task '{task.title}' for {request.user.email}")
+            return Response(serializer.data)
+        else:
+            logger.error(f"Invalid data for task {task_id}: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class TaskDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, task_id):
+        try:
+            task = Task.objects.get(id=task_id, user=request.user)
+            task.delete()
+            logger.info(f"Deleted task '{task.title}' for {request.user.email}")
+            return Response({'message': 'Task deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+        except Task.DoesNotExist:
+            logger.error(f"Task not found: {task_id}")
+            raise NotFound({'error': 'Task not found'})
         except Exception as e:
-            logger.error(f"Error updating task {task_id}: {str(e)}")
+            logger.error(f"Error deleting task {task_id}: {str(e)}")
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

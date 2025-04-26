@@ -37,8 +37,10 @@ urlpatterns = [
              template_name='registration/password_reset_complete.html'
          ),
          name='password_reset_complete'),
-    #path('api/', include('tasks.urls')),
+    path('api/', include('tasks.urls')),
+    path('api/', include('gamification.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('api/', include('sustainability.urls')),
     path('social/', include('social_django.urls', namespace='social')),
     #path('api/', include('users.urls')),
     path('api/wearables/', include('wearables.urls')),

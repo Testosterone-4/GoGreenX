@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from users.models import User
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 class SustainabilityAction(models.Model):
@@ -9,7 +10,8 @@ class SustainabilityAction(models.Model):
     action_type = models.CharField(max_length=50)  # e.g., "recycle", "bike"
     value = models.FloatField()  # e.g., kg, km
     date = models.DateTimeField(auto_now_add=True)
-    points_earned = models.IntegerField(default=0)
+    points_earned = models.IntegerField(default=0, validators=[MinValueValidator(0)])
+    points_processed = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.action_type} by {self.user.username}"
