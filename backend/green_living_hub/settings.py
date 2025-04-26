@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
     'rest_framework',
     'rest_framework.authtoken',
     'djoser',
@@ -52,7 +53,10 @@ INSTALLED_APPS = [
     'sustainability.apps.SustainabilityConfig',
     'gamification.apps.GamificationConfig',
     'tasks.apps.TasksConfig',
+    'community',
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -236,3 +240,15 @@ LOGGING = {
         },
     },
 }
+
+# Channels
+ASGI_APPLICATION = 'community_platform.routing.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+
