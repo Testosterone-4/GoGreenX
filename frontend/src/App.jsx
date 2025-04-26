@@ -19,14 +19,13 @@ import Training from './pages/Training.jsx';
 import Nutrition from './pages/Nutrition.jsx';
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 //import './App.css';
 import MyNavbar from './components/MyNavbar/MyNavbar';
 import HomePage from './pages/HomePage';
 import {Groups} from './pages/Groups';
 //import NotificationsPage from './pages/Notifications'
 import ProfilePage from './pages/ProfilePage';
-import { GroupCreate, GroupDetail, GroupEdit } from './components/GroupManagement';
 //import { NotificationProvider } from './contexts/NotificationContext';
 
 
@@ -39,20 +38,6 @@ function App() {
   const location = useLocation();
     const [activeTab, setActiveTab] = useState('home');
     const [user, setUser] = useState(null);
-   const [activeTab, setActiveTab] = useState('home');
-    const [user, setUser] = useState(null);
-
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'home': return <HomePage user={user} setUser={setUser}/>;
-      case 'groups': return <Groups user={user} />;
-      //case 'notifications': return < user={user} />;
-      //case 'profile': return <ProfilePage user={user} setUser={setUser} />;
-      default: return <HomePage user={user} />;
-    }
-  };
-
 
   const renderContent = () => {
     switch (activeTab) {
@@ -73,28 +58,27 @@ function App() {
   }, [location]);
 
 
-  return (
-    <div className="d-flex flex-column min-vh-100">
-      <Navbar />
-      <main className="flex-grow-1">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/actions" element={<Actions />} />
-          <Route path="/fitness-plan" element={<FitnessPlan />} />
-          <Route path="/nutrition" element={<Nutrition />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/wearable/connect" element={<WearableConnect />} />
-          <Route path="/wearable/data" element={<WearableData />} />
+ return (
+  <div className="d-flex flex-column min-vh-100">
+    <Navbar />
+    <main className="flex-grow-1">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/actions" element={<Actions />} />
+        <Route path="/fitness-plan" element={<FitnessPlan />} />
+        <Route path="/nutrition" element={<Nutrition />} />
+        <Route path="/training" element={<Training />} />
+        <Route path="/wearable/connect" element={<WearableConnect />} />
+        <Route path="/wearable/data" element={<WearableData />} />
 
-
-
-          {/* Community routes with tab navigation */}
-
-          <Route path="/community/*" element={
+        {/* Community routes with tab navigation */}
+        <Route
+          path="/community/*"
+          element={
             <div className="community-container">
               <MyNavbar
                 activeTab={activeTab}
@@ -105,19 +89,13 @@ function App() {
                 {renderContent()}
               </div>
             </div>
-          } />
-
-        
-      </div>
-       {!window.location.pathname.startsWith('/community') && <Footer />}
-
-    
-        </Routes>
-      </main>
-      <Footer />
-    </div>
-
-  );
+          }
+        />
+      </Routes>
+      {!window.location.pathname.startsWith('/community') && <Footer />}
+    </main>
+  </div>
+);
 }
 
 export default App;
