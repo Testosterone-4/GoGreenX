@@ -221,7 +221,9 @@ GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
+
 # logging configuration
+""""
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -240,6 +242,7 @@ LOGGING = {
         },
     },
 }
+"""
 
 # Channels
 ASGI_APPLICATION = 'community_platform.routing.application'

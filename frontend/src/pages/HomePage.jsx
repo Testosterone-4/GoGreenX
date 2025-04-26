@@ -66,7 +66,6 @@ const HomePage = ({ user, setUser }) => {
               {posts.length === 0 ? (
                 <div className="empty-posts-card">
                   <p className="empty-message">No posts yet. Be the first to share something!</p>
-                  <Button variant="success" className="create-post-btn">Create Post</Button>
                 </div>
               ) : (
                 posts.map(post => (
