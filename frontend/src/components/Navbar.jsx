@@ -4,6 +4,7 @@ import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
 import { Menu } from "lucide-react";
 import "../assets/css/navbarStyles.css";
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -41,7 +42,7 @@ const Navbar = () => {
 
             {/* Desktop Main Navigation */}
             <ul className="navbar-nav flex-row d-none d-lg-flex ms-4">
-              {["training", "nutrition", "forum"].map((route) => (
+              {["training", "nutrition", "community"].map((route) => (
                 <li className="nav-item mx-2" key={route}>
                   <NavLink
                     to={`/${route}`}
