@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ListGroup, Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 const Actions = () => {
   const [actions] = useState([
@@ -13,29 +14,193 @@ const Actions = () => {
   const [loading, setLoading] = useState({});
   const [tasks, setTasks] = useState([]);
   const [taskError, setTaskError] = useState(null);
+  const navigate = useNavigate();
+
+  const refreshToken = async () => {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) throw new Error('No refresh token found');
+      const response = await axios.post('http://localhost:8000/auth/jwt/refresh/', {
+        refresh: refreshToken
+      });
+      localStorage.setItem('accessToken', response.data.access);
+      return response.data.access;
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      navigate('/login');
+      return null;
+    }
+  };
+
+  const fetchTasks = async () => {
+    try {
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
+      const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('Fetched Tasks:', response.data); // Log once
+      setTasks(response.data);
+      setTaskError(null);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            console.log('Fetched Tasks (Retry):', response.data);
+            setTasks(response.data);
+            setTaskError(null);
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            setTaskError(retryError.response?.data?.error || 'Failed to fetch tasks');
+            navigate('/login');
+          }
+        }
+      } else {
+        setTaskError(error.response?.data?.error || 'Failed to fetch tasks');
+      }
+    }
+  };
 
   const handleAddTask = async (action) => {
     setLoading((prev) => ({ ...prev, [action.id]: true }));
     try {
-      const token = localStorage.getItem('token');
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
       await axios.post(
         'http://localhost:8000/api/tasks/list/',
         {
           title: action.title,
           category: action.category,
-          due_date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+          due_date: new Date().toISOString().split('T')[0],
         },
         {
-          headers: { Authorization: `Token ${token}` },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       alert(`${action.title} added to your tasks!`);
-      fetchTasks(); // Refresh task list
+      fetchTasks();
     } catch (error) {
       console.error('Error adding task:', error);
-      alert('Failed to add task.');
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            await axios.post(
+              'http://localhost:8000/api/tasks/list/',
+              {
+                title: action.title,
+                category: action.category,
+                due_date: new Date().toISOString().split('T')[0],
+              },
+              {
+                headers: { Authorization: `Bearer ${newToken}` },
+              }
+            );
+            alert(`${action.title} added to your tasks!`);
+            fetchTasks();
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            alert('Failed to add task.');
+            navigate('/login');
+          }
+        }
+      } else {
+        alert('Failed to add task.');
+      }
     } finally {
       setLoading((prev) => ({ ...prev, [action.id]: false }));
+    }
+  };
+
+  const handleCustomTaskSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
+      await axios.post(
+        'http://localhost:8000/api/tasks/list/',
+        {
+          ...customTask,
+          due_date: new Date(customTask.due_date).toISOString().split('T')[0],
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert('Task added!');
+      setCustomTask({ title: '', category: 'exercise', due_date: '' });
+      fetchTasks();
+    } catch (error) {
+      console.error('Error adding custom task:', error);
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            await axios.post(
+              'http://localhost:8000/api/tasks/list/',
+              {
+                ...customTask,
+                due_date: new Date(customTask.due_date).toISOString().split('T')[0],
+              },
+              {
+                headers: { Authorization: `Bearer ${newToken}` },
+              }
+            );
+            alert('Task added!');
+            setCustomTask({ title: '', category: 'exercise', due_date: '' });
+            fetchTasks();
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            alert('Failed to add task.');
+            navigate('/login');
+          }
+        }
+      } else {
+        alert('Failed to add task.');
+      }
+    }
+  };
+
+  const handleToggleComplete = async (taskId, isCompleted) => {
+    try {
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
+      const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+        is_completed: !isCompleted,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setTasks(tasks.map(task => task.id === taskId ? response.data : task));
+      setTaskError(null);
+    } catch (error) {
+      console.error('Error updating task:', error);
+      if (error.response?.status === 401) {
+        const newToken = await refreshToken();
+        if (newToken) {
+          try {
+            const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+              is_completed: !isCompleted,
+            }, {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            setTasks(tasks.map(task => task.id === taskId ? response.data : task));
+            setTaskError(null);
+          } catch (retryError) {
+            console.error('Retry failed:', retryError);
+            setTaskError(retryError.response?.data?.error || 'Failed to update task');
+            navigate('/login');
+          }
+        }
+      } else {
+        setTaskError(error.response?.data?.error || 'Failed to update task');
+      }
     }
   };
 
@@ -50,66 +215,10 @@ const Actions = () => {
     setCustomTask((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCustomTaskSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:8000/api/tasks/list/',
-        {
-          ...customTask,
-          due_date: new Date(customTask.due_date).toISOString().split('T')[0], // Convert to YYYY-MM-DD
-        },
-        {
-          headers: { Authorization: `Token ${token}` },
-        }
-      );
-      alert('Task added!');
-      setCustomTask({ title: '', category: 'exercise', due_date: '' });
-      fetchTasks(); // Refresh task list
-    } catch (error) {
-      console.error('Error adding custom task:', error);
-      alert('Failed to add task.');
-    }
-  };
-
-  const fetchTasks = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('No token found');
-      const response = await axios.get('http://localhost:8000/api/tasks/list/', {
-        headers: { Authorization: `Token ${token}` },
-      });
-      console.log('Fetched Tasks:', response.data);
-      setTasks(response.data);
-      setTaskError(null);
-    } catch (error) {
-      console.error('Error fetching tasks:', error);
-      setTaskError(error.response?.status === 404 ? 'Tasks endpoint not found. Please contact support.' : 'Failed to fetch tasks');
-    }
-  };
-
-  const handleToggleComplete = async (taskId, isCompleted) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
-        is_completed: !isCompleted,
-      }, {
-        headers: { Authorization: `Token ${token}` },
-      });
-      setTasks(tasks.map(task => task.id === taskId ? response.data : task));
-      setTaskError(null);
-    } catch (error) {
-      console.error('Error updating task:', error);
-      setTaskError('Failed to update task');
-    }
-  };
-
-  // Group tasks by due_date and use only weekday name
   const groupedTasks = tasks.reduce((acc, task) => {
     const date = new Date(task.due_date);
     const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-    const key = `${dayName}|${task.due_date}`; // Unique key to avoid date conflicts
+    const key = `${dayName}|${task.due_date}`;
     if (!acc[key]) {
       acc[key] = { dayName, tasks: [] };
     }
@@ -117,15 +226,16 @@ const Actions = () => {
     return acc;
   }, {});
 
-  // Sort tasks within each day: exercise first, then nutrition, then sustainability
   Object.keys(groupedTasks).forEach(key => {
     groupedTasks[key].tasks.sort((a, b) => {
-      const order = { exercise: 1, nutrition: 2, sustainability: 3 };
-      return order[a.category] - order[b.category];
+      if (a.category === 'exercise' && b.category !== 'exercise') return -1;
+      if (b.category === 'exercise' && a.category !== 'exercise') return 1;
+      if (a.category === 'nutrition' && b.category === 'sustainability') return -1;
+      if (b.category === 'nutrition' && a.category === 'sustainability') return 1;
+      return 0;
     });
   });
 
-  // Sort days chronologically
   const sortedDays = Object.keys(groupedTasks).sort((a, b) => {
     const dateA = new Date(a.split('|')[1]);
     const dateB = new Date(b.split('|')[1]);
@@ -134,13 +244,11 @@ const Actions = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [navigate]);// eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="container mt-5">
       <h1 className="display-5 mb-4 text-center">Actions</h1>
-
-      {/* Add Custom Task Form */}
       <div className="card p-4 mb-4">
         <h3>Add a Custom Task</h3>
         <form onSubmit={handleCustomTaskSubmit}>
@@ -180,8 +288,6 @@ const Actions = () => {
           <button type="submit" className="btn btn-success">Add Custom Task</button>
         </form>
       </div>
-
-      {/* Your Tasks Section */}
       <div className="mb-5">
         <h3>Your Tasks</h3>
         {taskError && <div className="alert alert-danger">{taskError}</div>}
@@ -216,8 +322,6 @@ const Actions = () => {
           ))
         )}
       </div>
-
-      {/* Suggested Actions Section */}
       <div>
         <h3>Suggested Actions</h3>
         <div className="row">

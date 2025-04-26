@@ -1,16 +1,19 @@
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import Navbar from "./components/Navbar.jsx";
-import Footer from "./components/Footer.jsx";
+import { useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Profile from "./pages/Profile.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
-import Actions from "./pages/Actions.jsx";
-import FitnessPlan from "./pages/FitnessPlan.jsx";
-import Training from "./pages/Training.jsx";
+import Navbar from './components/Navbar.jsx';
+import Footer from './components/Footer.jsx';
+import Home from './pages/Home.jsx';
+import Login from './pages/Login.jsx';
+import Register from './pages/Register.jsx';
+import Profile from './pages/Profile.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Actions from './pages/Actions.jsx';
+import FitnessPlan from './pages/FitnessPlan.jsx';
+import Training from './pages/Training.jsx';
 import Nutrition from './pages/Nutrition.jsx';
+
 
 import React, { useState, useEffect } from 'react';
 //import './App.css';
@@ -24,9 +27,15 @@ import { GroupCreate, GroupDetail, GroupEdit } from './components/GroupManagemen
 
 
 
-function App() {
 
+
+
+
+function App() {
+  const location = useLocation();
     const [activeTab, setActiveTab] = useState('home');
+    const [user, setUser] = useState(null);
+   const [activeTab, setActiveTab] = useState('home');
     const [user, setUser] = useState(null);
 
 
@@ -40,10 +49,32 @@ function App() {
     }
   };
 
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'home': return <HomePage user={user} setUser={setUser}/>;
+      case 'groups': return <Groups user={user} />;
+      //case 'notifications': return < user={user} />;
+      //case 'profile': return <ProfilePage user={user} setUser={setUser} />;
+      default: return <HomePage user={user} />;
+    }
+  };
+
+  useEffect(() => {
+    // Example class toggle if needed for special homepage styling
+    if (location.pathname === '/') {
+      document.body.classList.add('no-navbar-padding');
+    } else {
+      document.body.classList.remove('no-navbar-padding');
+    }
+  }, [location]);
+
+
   return (
-    <Router>
+    <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <div>
+      
+      <main className="flex-grow-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -54,6 +85,7 @@ function App() {
           <Route path="/fitness-plan" element={<FitnessPlan />} />
           <Route path="/nutrition" element={<Nutrition />} />
           <Route path="/training" element={<Training />} />
+
 
           {/* Community routes with tab navigation */}
 
@@ -70,11 +102,18 @@ function App() {
             </div>
           } />
 
-        </Routes>
+        
       </div>
        {!window.location.pathname.startsWith('/community') && <Footer />}
 
-    </Router>
+    
+
+        </Routes>
+      </main>
+
+      <Footer />
+    </div>
+
   );
 }
 

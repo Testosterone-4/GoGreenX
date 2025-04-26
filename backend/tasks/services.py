@@ -1,98 +1,130 @@
-import os
-import google.generativeai as genai
-import json
-import time
+from django.conf import settings
 from datetime import datetime, timedelta
 from .models import Task
-from django.conf import settings
+import google.generativeai as genai
+import logging
+import json
 
-genai.configure(api_key=settings.GEMINI_API_KEY)
+logger = logging.getLogger(__name__)
 
 def generate_fitness_plan(fitness_input):
-    tasks = []
+    """
+    Generate a fitness plan using Gemini API based on FitnessInput.
+    Returns a list of Task objects.
+    """
     try:
-        # Calculate the next Monday as the start date
-        today = datetime.now()
-        days_until_monday = (7 - today.weekday()) % 7 or 7
-        start_date = today + timedelta(days=days_until_monday)
+        genai.configure(api_key=settings.GEMINI_API_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
 
-        # Prepare prompt for Gemini
         prompt = f"""
-        Generate a personalized fitness plan for a {fitness_input.age}-year-old {fitness_input.sex} weighing {fitness_input.weight}kg, {fitness_input.height}cm tall, with the goal of {fitness_input.goal}. Create a 5-day plan (Monday to Friday) starting from {start_date.strftime('%Y-%m-%d')}. Each day must have exactly 5 tasks: 3 exercise tasks and 2 nutrition tasks. Return a JSON array of 25 tasks with the following fields:
-        - title: Short description of the task (max 150 characters).
-        - category: Either "exercise" or "nutrition".
-        - due_date: Date in YYYY-MM-DD format, corresponding to the assigned day (Monday to Friday).
-        Ensure titles are concise, varied, and relevant to the user's goal. Example:
+        Create a 5-day fitness plan with 5 daily tasks each day for a {fitness_input.sex} 
+        aged {fitness_input.age}, weight {fitness_input.weight}kg, height {fitness_input.height}cm, 
+        with the goal of {fitness_input.goal}. Include daily tasks categorized as 'exercise', 
+        'nutrition', or 'sustainability'. Each day should have exactly 5 tasks with a mix of categories.
+        
+        Each task should have:
+        - title (max 150 characters)
+        - category
+        - due_date (YYYY-MM-DD format, 5 consecutive dates)
+        
+        Return a JSON array of objects with keys: title, category, due_date.
+        
+        Example structure:
         [
-          {{"title": "Run 5km at moderate pace", "category": "exercise", "due_date": "2025-04-28"}},
-          {{"title": "Eat 200g grilled chicken", "category": "nutrition", "due_date": "2025-04-28"}},
-          ...
-          {{"title": "Yoga for 30 min", "category": "exercise", "due_date": "2025-05-02"}}
+            {{"title": "Morning jog", "category": "exercise", "due_date": "2025-04-23"}},
+            {{"title": "100g protein intake", "category": "nutrition", "due_date": "2025-04-23"}},
+            {{"title": "Recycle plastics", "category": "sustainability", "due_date": "2025-04-23"}},
+            {{"title": "Strength training", "category": "exercise", "due_date": "2025-04-23"}},
+            {{"title": "Vegetable salad", "category": "nutrition", "due_date": "2025-04-23"}},
+            {{"title": "Cycling session", "category": "exercise", "due_date": "2025-04-24"}},
+            ...
         ]
         """
+        response = model.generate_content(prompt)
+        
+        try:
+            tasks_data = json.loads(response.text.strip('```json\n').strip('```'))
+        except json.JSONDecodeError:
+            logger.warning("Gemini API returned invalid JSON, falling back to default tasks")
+            tasks_data = []
+            for day in range(1, 6):
+                due_date = (datetime.now() + timedelta(days=day)).strftime('%Y-%m-%d')
+                tasks_data.extend([
+                    {"title": "30-minute cardio", "category": "exercise", "due_date": due_date},
+                    {"title": "High-protein meal", "category": "nutrition", "due_date": due_date},
+                    {"title": "Use reusable bottle", "category": "sustainability", "due_date": due_date},
+                    {"title": "Strength training", "category": "exercise", "due_date": due_date},
+                    {"title": "Vegetable intake", "category": "nutrition", "due_date": due_date}
+                ])
 
-        # Gemini API request with retries
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        max_retries = 5
-        for attempt in range(max_retries):
-            try:
-                response = model.generate_content(prompt)
-                generated_text = response.text.strip()
-                print(f"Gemini Response (Attempt {attempt + 1}): {generated_text}")
-                if generated_text.startswith('```json'):
-                    generated_text = generated_text[7:-3].strip()
-                tasks_data = json.loads(generated_text)
-                if not isinstance(tasks_data, list) or len(tasks_data) != 25:
-                    raise ValueError("Expected a JSON array with 25 tasks")
-                # Verify each day has 5 tasks (3 exercise, 2 nutrition)
-                for day in range(5):
-                    day_tasks = [t for t in tasks_data if t['due_date'] == (start_date + timedelta(days=day)).strftime('%Y-%m-%d')]
-                    if len(day_tasks) != 5:
-                        raise ValueError(f"Day {day + 1} does not have exactly 5 tasks")
-                    exercise_count = sum(1 for t in day_tasks if t['category'] == 'exercise')
-                    if exercise_count != 3:
-                        raise ValueError(f"Day {day + 1} does not have exactly 3 exercise tasks")
-                break
-            except (Exception, json.JSONDecodeError, ValueError) as e:
-                print(f"Attempt {attempt + 1} failed: {str(e)}")
-                if attempt < max_retries - 1:
-                    time.sleep(2 ** attempt)
-                else:
-                    raise Exception(f"Gemini API failed after {max_retries} attempts: {str(e)}")
-
-        # Create tasks
+        tasks = []
         for task_data in tasks_data:
-            title = task_data.get('title', f"{fitness_input.goal.capitalize()} Task")[:150]
-            category = task_data.get('category', 'exercise')
-            if category not in ['exercise', 'nutrition']:
-                category = 'exercise'
-            due_date_str = task_data.get('due_date', '')
             try:
-                due_date = datetime.strptime(due_date_str, '%Y-%m-%d')
-            except ValueError:
-                due_date = start_date  # Fallback to Monday
-            tasks.append(Task(
-                user=fitness_input.user,
-                title=title,
-                category=category,
-                due_date=due_date,
-                is_completed=False
-            ))
-
-    except Exception as e:
-        print(f"Error in generate_fitness_plan: {str(e)}")
-        # Fallback tasks: 5 days, 5 tasks per day (3 exercise, 2 nutrition)
-        for day in range(5):
-            day_date = start_date + timedelta(days=day)
-            for i in range(5):
-                tasks.append(Task(
+                task = Task(
                     user=fitness_input.user,
-                    title=f"{fitness_input.goal.capitalize()} Task {i + 1} Day {day + 1}",
-                    category="exercise" if i < 3 else "nutrition",
-                    due_date=day_date,
+                    title=task_data['title'][:150],
+                    category=task_data['category'],
+                    due_date=task_data['due_date'],
                     is_completed=False
-                ))
+                )
+                task.save()
+                tasks.append(task)
+            except Exception as e:
+                logger.error(f"Error creating task: {str(e)}")
+                continue
 
-    # Save tasks
-    Task.objects.bulk_create(tasks)
-    return tasks
+        logger.info(f"Generated {len(tasks)} tasks for user {fitness_input.user.email}")
+        return tasks
+    except Exception as e:
+        logger.error(f"Error generating fitness plan: {str(e)}")
+        # Fallback default tasks
+        tasks = []
+        for day in range(1, 6):
+            due_date = datetime.now() + timedelta(days=day)
+            tasks.extend([
+                Task(
+                    user=fitness_input.user,
+                    title="30-minute cardio",
+                    category="exercise",
+                    due_date=due_date,
+                    is_completed=False
+                ),
+                Task(
+                    user=fitness_input.user,
+                    title="High-protein meal",
+                    category="nutrition",
+                    due_date=due_date,
+                    is_completed=False
+                ),
+                Task(
+                    user=fitness_input.user,
+                    title="Use public transport",
+                    category="sustainability",
+                    due_date=due_date,
+                    is_completed=False
+                ),
+                Task(
+                    user=fitness_input.user,
+                    title="Strength training",
+                    category="exercise",
+                    due_date=due_date,
+                    is_completed=False
+                ),
+                Task(
+                    user=fitness_input.user,
+                    title="Vegetable intake",
+                    category="nutrition",
+                    due_date=due_date,
+                    is_completed=False
+                )
+            ])
+        
+        for task in tasks:
+            try:
+                task.save()
+            except Exception as e:
+                logger.error(f"Error saving fallback task: {str(e)}")
+                continue
+
+        logger.info(f"Fallback: Generated {len(tasks)} default tasks for user {fitness_input.user.email}")
+        return [task for task in tasks if task.id is not None]
