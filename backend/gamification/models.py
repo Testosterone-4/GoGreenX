@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from users.models import User
 
 
-# Create your models here.
+
 class Badge(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
@@ -49,7 +49,13 @@ class Notification(models.Model):
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    badge = models.ForeignKey(
+        'Badge',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='notifications'
+    )
 
     def __str__(self):
         return f"Notification for {self.user.username}: {self.message}"

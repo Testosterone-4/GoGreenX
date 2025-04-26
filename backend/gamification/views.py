@@ -28,11 +28,11 @@ class BadgeListView(ListAPIView):
     List all available badges
     GET /api/gamification/badges/
     """
+    queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        return Badge.objects.all()
+
 
 
 class UserBadgeListView(ListAPIView):

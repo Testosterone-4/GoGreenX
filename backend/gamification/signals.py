@@ -25,7 +25,7 @@ def update_points_from_task(sender, instance, created, **kwargs):
 
         check_and_award_badges(user)
         instance.points_processed = True
-        instance.save(updated_fields=['points_processed'])
+        instance.save()
 
 @receiver(post_save, sender=SustainabilityAction)
 def update_points_from_sustainability(sender, instance, created, **kwargs):
@@ -46,7 +46,7 @@ def update_points_from_sustainability(sender, instance, created, **kwargs):
 
         check_and_award_badges(user)
         instance.points_processed = True
-        instance.save(updated_fields=['points_processed'])
+        instance.save()
 
 def check_and_award_badges(user):
     user_points = UserPoints.objects.get(user=user)

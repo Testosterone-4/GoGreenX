@@ -23,8 +23,11 @@ class PointsTransactionSerializer(serializers.ModelSerializer):
         model = PointsTransaction
         fields = [ 'amount', 'source', 'reference_id', 'timestamp']
 
+
 class NotificationSerializer(serializers.ModelSerializer):
+    badge = BadgeSerializer(read_only=True)
+
     class Meta:
         model = Notification
-        fields = ['id', 'message', 'is_read', 'created_at', 'updated_at']
+        fields = ['id', 'message', 'is_read', 'created_at', 'badge']
 
