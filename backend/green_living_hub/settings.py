@@ -223,7 +223,6 @@ GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
 
 # logging configuration
-""""
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -240,9 +239,13 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'tasks': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
     },
 }
-"""
 
 # Channels
 ASGI_APPLICATION = 'community_platform.routing.application'
