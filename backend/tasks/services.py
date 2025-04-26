@@ -24,33 +24,47 @@ def generate_fitness_plan(fitness_input):
         
         Each task should have:
         - title (max 150 characters)
-        - category
-        - due_date (YYYY-MM-DD format, 5 consecutive dates)
+        - category (must be 'exercise', 'nutrition', or 'sustainability')
+        - due_date (YYYY-MM-DD format, 5 consecutive dates starting tomorrow)
         
         Return a JSON array of objects with keys: title, category, due_date.
         
         Example structure:
         [
-            {{"title": "Morning jog", "category": "exercise", "due_date": "2025-04-23"}},
-            {{"title": "100g protein intake", "category": "nutrition", "due_date": "2025-04-23"}},
-            {{"title": "Recycle plastics", "category": "sustainability", "due_date": "2025-04-23"}},
-            {{"title": "Strength training", "category": "exercise", "due_date": "2025-04-23"}},
-            {{"title": "Vegetable salad", "category": "nutrition", "due_date": "2025-04-23"}},
-            {{"title": "Cycling session", "category": "exercise", "due_date": "2025-04-24"}},
+            {{"title": "Morning jog", "category": "exercise", "due_date": "2025-04-27"}},
+            {{"title": "100g protein intake", "category": "nutrition", "due_date": "2025-04-27"}},
+            {{"title": "Recycle plastics", "category": "sustainability", "due_date": "2025-04-27"}},
+            {{"title": "Strength training", "category": "exercise", "due_date": "2025-04-27"}},
+            {{"title": "Vegetable salad", "category": "nutrition", "due_date": "2025-04-27"}},
             ...
         ]
         """
         response = model.generate_content(prompt)
         
         try:
-            tasks_data = json.loads(response.text.strip('```json\n').strip('```'))
-        except json.JSONDecodeError:
-            logger.warning("Gemini API returned invalid JSON, falling back to default tasks")
+            # Strip markdown and parse JSON
+            text = response.text.strip()
+            if text.startswith('```json'):
+                text = text[7:-3].strip()
+            tasks_data = json.loads(text)
+            
+            # Validate tasks
+            valid_categories = {'exercise', 'nutrition', 'sustainability'}
+            for task in tasks_data:
+                if task['category'] not in valid_categories:
+                    raise ValueError(f"Invalid category: {task['category']}")
+                try:
+                    datetime.strptime(task['due_date'], '%Y-%m-%d')
+                except ValueError:
+                    raise ValueError(f"Invalid due_date format: {task['due_date']}")
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.warning(f"Gemini API error: {str(e)}. Falling back to default tasks")
             tasks_data = []
-            for day in range(1, 6):
-                due_date = (datetime.now() + timedelta(days=day)).strftime('%Y-%m-%d')
+            start_date = datetime.now() + timedelta(days=1)
+            for day in range(5):
+                due_date = (start_date + timedelta(days=day)).strftime('%Y-%m-%d')
                 tasks_data.extend([
-                    {"title": "30-minute cardio", "category": "exercise", "due_date": due_date},
+                    {"title": "Walk 30 minutes", "category": "exercise", "due_date": due_date},
                     {"title": "High-protein meal", "category": "nutrition", "due_date": due_date},
                     {"title": "Use reusable bottle", "category": "sustainability", "due_date": due_date},
                     {"title": "Strength training", "category": "exercise", "due_date": due_date},
@@ -79,12 +93,13 @@ def generate_fitness_plan(fitness_input):
         logger.error(f"Error generating fitness plan: {str(e)}")
         # Fallback default tasks
         tasks = []
-        for day in range(1, 6):
-            due_date = datetime.now() + timedelta(days=day)
+        start_date = datetime.now() + timedelta(days=1)
+        for day in range(5):
+            due_date = start_date + timedelta(days=day)
             tasks.extend([
                 Task(
                     user=fitness_input.user,
-                    title="30-minute cardio",
+                    title="Walk 30 minutes",
                     category="exercise",
                     due_date=due_date,
                     is_completed=False
