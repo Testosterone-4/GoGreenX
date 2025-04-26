@@ -6,10 +6,13 @@ import {Menu} from "lucide-react";
 import { motion} from "framer-motion";
 import logo from "../assets/images/gogreenx_logo.png";
 import "../assets/css/navbarStyles.css";
+
+import { useAuth } from '../contexts/AuthContext';
 import axios from "axios";
 import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
 
 
 const Navbar = () => {
@@ -111,10 +114,12 @@ const Navbar = () => {
             </NavLink>
           </div>
 
+          
           {/* Desktop nav items */}
           <div className="d-none d-lg-flex align-items-center gap-3 me-4">
             <ul className="navbar-nav flex-row me-3">
-              {["training", "nutrition", "forum"].map((route) => (
+              {["training", "nutrition", "community"].map((route) => (
+
                 <li className="nav-item mx-2" key={route}>
                   <NavLink
                     to={`/${route}`}

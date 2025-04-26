@@ -1,0 +1,47 @@
+.groups-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top:150px;
+  margin-bottom:250px;
+}
+
+.groups-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.groups-header h1 {
+  margin: 0;
+}
+
+.groups-header button {
+  background: #3578e5;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.groups-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+}
+
+.no-groups {
+  text-align: center;
+  padding: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
