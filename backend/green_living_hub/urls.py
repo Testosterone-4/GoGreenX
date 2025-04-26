@@ -21,7 +21,9 @@ urlpatterns = [
          ),
          name='password_reset_complete'),
     path('api/tasks/', include('tasks.urls')),  # Include tasks URLs
+    path('api/', include('gamification.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+    path('api/', include('sustainability.urls')),
     path('social/', include('social_django.urls', namespace='social')),
     path('api/wearables/', include('wearables.urls')),
     path('api/', include('community.urls')),

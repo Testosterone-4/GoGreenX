@@ -1,6 +1,6 @@
 # backend/tasks/urls.py
 from django.urls import path
-from .views import FitnessPlanView, TaskListView, TaskUpdateView
+from .views import FitnessPlanView, TaskListView, TaskUpdateView, TaskDeleteView
 
 urlpatterns = [
     path('plan/', FitnessPlanView.as_view(), name='fitness-plan'),       # /api/tasks/plan/
