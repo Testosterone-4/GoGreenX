@@ -4,6 +4,10 @@ import { useEffect } from 'react';
 
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
+import WearableConnect from './components/WearableConnect.jsx';
+import WearableData from './components/WearableData.jsx';
+
+
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
@@ -61,7 +65,6 @@ function App() {
   };
 
   useEffect(() => {
-    // Example class toggle if needed for special homepage styling
     if (location.pathname === '/') {
       document.body.classList.add('no-navbar-padding');
     } else {
@@ -73,7 +76,6 @@ function App() {
   return (
     <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      
       <main className="flex-grow-1">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -85,6 +87,9 @@ function App() {
           <Route path="/fitness-plan" element={<FitnessPlan />} />
           <Route path="/nutrition" element={<Nutrition />} />
           <Route path="/training" element={<Training />} />
+          <Route path="/wearable/connect" element={<WearableConnect />} />
+          <Route path="/wearable/data" element={<WearableData />} />
+
 
 
           {/* Community routes with tab navigation */}
@@ -107,10 +112,8 @@ function App() {
        {!window.location.pathname.startsWith('/community') && <Footer />}
 
     
-
         </Routes>
       </main>
-
       <Footer />
     </div>
 

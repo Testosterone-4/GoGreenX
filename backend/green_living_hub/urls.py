@@ -41,6 +41,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
     path('social/', include('social_django.urls', namespace='social')),
     #path('api/', include('users.urls')),
+    path('api/wearables/', include('wearables.urls')),
+    #path('api/', include('users.urls')),
     path('api/',include('community.urls'))
 ]
 
