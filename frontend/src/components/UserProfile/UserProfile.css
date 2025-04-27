@@ -1,15 +1,16 @@
 .user-profile {
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
   max-width: 600px;
-  margin: 0 auto;
+  margin: 40px auto;
+  font-family: 'Arial', sans-serif;
 }
 
 .profile-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .profile-avatar {
@@ -18,6 +19,7 @@
   border-radius: 50%;
   object-fit: cover;
   margin: 0 auto 15px;
+  border: 3px solid #3498db;
 }
 
 .profile-avatar-placeholder {
@@ -32,57 +34,85 @@
   font-size: 48px;
   font-weight: bold;
   margin: 0 auto 15px;
+  text-transform: uppercase;
 }
 
 .profile-header h2 {
   margin: 0;
-  color: #333;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .user-email {
-  color: #777;
+  color: #7f8c8d;
   margin: 5px 0 0;
+  font-size: 14px;
+}
+
+.profile-info {
+  margin: 20px 0;
+  background-color: #f4f6f7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.profile-info h4 {
+  margin-bottom: 15px;
+  color: #34495e;
+  font-weight: bold;
+}
+
+.profile-info p {
+  margin: 0;
+  color: #7f8c8d;
+  font-size: 16px;
 }
 
 .profile-bio {
   margin: 20px 0;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-radius: 6px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
 }
 
 .profile-bio h4 {
   margin: 0 0 10px;
-  color: #333;
+  color: #34495e;
+  font-weight: bold;
 }
 
 .profile-bio p {
   margin: 0;
-  color: #555;
-  line-height: 1.5;
+  color: #7f8c8d;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .profile-stats {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin: 25px 0;
 }
 
 .stat-item {
   text-align: center;
-  padding: 0 20px;
+  padding: 10px;
+  background-color: #ecf0f1;
+  border-radius: 8px;
+  width: 120px;
 }
 
 .stat-number {
   display: block;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
-  color: #333;
+  color: #3498db;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #777;
+  color: #7f8c8d;
 }
 
 .profile-actions {
@@ -90,20 +120,21 @@
 }
 
 .edit-profile-btn {
-  padding: 10px 20px;
+  padding: 12px 25px;
   background-color: #3498db;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
 .edit-profile-btn:hover {
   background-color: #2980b9;
+  transform: scale(1.05);
 }
 
-.edit-profile-btn i {
-  margin-right: 8px;
+.edit-profile-btn:active {
+  transform: scale(0.98);
 }

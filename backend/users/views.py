@@ -9,6 +9,14 @@ from .utils import google_get_access_token, google_get_user_info, generate_token
 from .models import User
 from rest_framework import status
 from .serializers import UserCreateSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from .serializers import UserProfileSerializer, UserCreateSerializer
+from .models import User
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 
 
 class GoogleLoginApi(PublicApiMixin, ApiErrorsMixin, APIView):
@@ -65,4 +73,44 @@ class GoogleLoginApi(PublicApiMixin, ApiErrorsMixin, APIView):
                 'refresh_token': str(refresh_token)
             }
             return Response(response_data, status=status.HTTP_200_OK)
+        
+class UserCreateView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(
+                {
+                    "user": UserProfileSerializer(user).data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# View for handling the user's profile
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]  # Only authenticated users can access their profile
+    
+    def get(self, request, *args, **kwargs):
+        user = request.user  # Get the currently authenticated user
+        serializer = UserProfileSerializer(user)  # Serialize the user data
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        user = request.user  # Get the currently authenticated user
+        serializer = UserProfileSerializer(user, data=request.data, partial=True)  # Partial update
+        if serializer.is_valid():
+            serializer.save()  # Save the updated data
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Optional: View for handling password reset
+class UserPasswordResetView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, *args, **kwargs):
+        # Custom logic for password reset
+        # You can call Django's default password reset functionality here
+        pass
+
 

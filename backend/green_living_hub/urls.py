@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/', include('sustainability.urls')),
     path('social/', include('social_django.urls', namespace='social')),
     path('api/wearables/', include('wearables.urls')),
+    path('users/', include('users.urls')),  # Add this line for user-related endpoints
     path('api/', include('community.urls')),
 ]
 
