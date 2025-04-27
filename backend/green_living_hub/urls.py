@@ -27,6 +27,7 @@ urlpatterns = [
     path('social/', include('social_django.urls', namespace='social')),
     path('api/wearables/', include('wearables.urls')),
     path('api/', include('community.urls')),
+    path('api/users/', include('users.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

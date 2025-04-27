@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'social_django',
+    'django_extensions',
 
     'users.apps.UsersConfig',
     'wearables.apps.WearablesConfig',
