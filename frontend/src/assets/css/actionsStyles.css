@@ -1,0 +1,87 @@
+.actions-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+/* Card Styles */
+.actions-page .card {
+  border: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.actions-page .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Form Controls */
+.actions-page .form-control,
+.actions-page .form-select {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.actions-page .form-control:focus,
+.actions-page .form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+  border-color: #28a745;
+}
+
+/* List Group Items */
+.actions-page .list-group-item {
+  border-left: none;
+  border-right: none;
+  transition: all 0.2s ease;
+}
+
+.actions-page .list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Badge Styles */
+.actions-page .badge {
+  font-weight: 500;
+  padding: 0.35em 0.65em;
+}
+
+/* Button Styles */
+.actions-page .btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.actions-page .btn-outline-success {
+  color: #28a745;
+  border-color: #28a745;
+}
+
+.actions-page .btn-outline-success:hover {
+  background-color: #28a745;
+  color: white;
+}
+
+/* Hover Effect */
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Progress Bar */
+.actions-page .progress {
+  height: 8px;
+  border-radius: 4px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .actions-page .display-5 {
+    font-size: 2.2rem;
+  }
+
+  .actions-page .form-control,
+  .actions-page .form-select {
+    margin-bottom: 10px;
+  }
+}
