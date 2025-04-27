@@ -4,8 +4,35 @@ from .models import Task
 import google.generativeai as genai
 import logging
 import json
+import random  # Add this import
 
 logger = logging.getLogger(__name__)
+
+def calculate_points(category, title):
+    """Calculate points based on category and task complexity"""
+    base_points = {
+        'exercise': random.randint(40, 100),  # Highest points for exercise
+        'sustainability': random.randint(30, 80),
+        'nutrition': random.randint(20, 60)
+    }
+    
+    # Add bonus points for specific keywords
+    bonus_triggers = {
+        'intense': 20,
+        'training': 15,
+        'cardio': 10,
+        'organic': 15,
+        'recycle': 10,
+        'meal prep': 10
+    }
+    
+    points = base_points[category]
+    
+    for trigger, bonus in bonus_triggers.items():
+        if trigger in title.lower():
+            points += bonus
+    
+    return min(max(points, 10), 100)  # Ensure between 10-100
 
 def generate_fitness_plan(fitness_input):
     """
@@ -16,6 +43,9 @@ def generate_fitness_plan(fitness_input):
         genai.configure(api_key=settings.GEMINI_API_KEY)
         model = genai.GenerativeModel('gemini-1.5-flash')
 
+        # Get current date in YYYY-MM-DD format
+        start_date = datetime.now().strftime('%Y-%m-%d')
+        
         prompt = f"""
         Create a 5-day fitness plan with 5 daily tasks each day for a {fitness_input.sex} 
         aged {fitness_input.age}, weight {fitness_input.weight}kg, height {fitness_input.height}cm, 
@@ -25,20 +55,18 @@ def generate_fitness_plan(fitness_input):
         Each task should have:
         - title (max 150 characters)
         - category (must be 'exercise', 'nutrition', or 'sustainability')
-        - due_date (YYYY-MM-DD format, 5 consecutive dates starting tomorrow)
+        - due_date (YYYY-MM-DD format, 5 consecutive dates starting from {start_date})
         
         Return a JSON array of objects with keys: title, category, due_date.
         
         Example structure:
         [
-            {{"title": "Morning jog", "category": "exercise", "due_date": "2025-04-27"}},
-            {{"title": "100g protein intake", "category": "nutrition", "due_date": "2025-04-27"}},
-            {{"title": "Recycle plastics", "category": "sustainability", "due_date": "2025-04-27"}},
-            {{"title": "Strength training", "category": "exercise", "due_date": "2025-04-27"}},
-            {{"title": "Vegetable salad", "category": "nutrition", "due_date": "2025-04-27"}},
+            {{"title": "Morning jog", "category": "exercise", "due_date": "{start_date}"}},
+            {{"title": "100g protein intake", "category": "nutrition", "due_date": "{start_date}"}},
             ...
         ]
         """
+        
         response = model.generate_content(prompt)
         
         try:
@@ -60,7 +88,7 @@ def generate_fitness_plan(fitness_input):
         except (json.JSONDecodeError, ValueError) as e:
             logger.warning(f"Gemini API error: {str(e)}. Falling back to default tasks")
             tasks_data = []
-            start_date = datetime.now() + timedelta(days=1)
+            start_date = datetime.now()
             for day in range(5):
                 due_date = (start_date + timedelta(days=day)).strftime('%Y-%m-%d')
                 tasks_data.extend([
@@ -79,7 +107,11 @@ def generate_fitness_plan(fitness_input):
                     title=task_data['title'][:150],
                     category=task_data['category'],
                     due_date=task_data['due_date'],
-                    is_completed=False
+                    is_completed=False,
+                    points_rewarded=calculate_points(
+                        task_data['category'],
+                        task_data['title']
+                    )
                 )
                 task.save()
                 tasks.append(task)
@@ -89,57 +121,37 @@ def generate_fitness_plan(fitness_input):
 
         logger.info(f"Generated {len(tasks)} tasks for user {fitness_input.user.email}")
         return tasks
+    
     except Exception as e:
         logger.error(f"Error generating fitness plan: {str(e)}")
-        # Fallback default tasks
+        # Fallback default tasks with points
         tasks = []
-        start_date = datetime.now() + timedelta(days=1)
+        start_date = datetime.now()
         for day in range(5):
             due_date = start_date + timedelta(days=day)
-            tasks.extend([
-                Task(
+            default_tasks = [
+                ("Walk 30 minutes", "exercise", 40),
+                ("High-protein meal", "nutrition", 30),
+                ("Use public transport", "sustainability", 35),
+                ("Strength training", "exercise", 60),
+                ("Vegetable intake", "nutrition", 25)
+            ]
+            
+            for title, category, points in default_tasks:
+                task = Task(
                     user=fitness_input.user,
-                    title="Walk 30 minutes",
-                    category="exercise",
+                    title=title,
+                    category=category,
                     due_date=due_date,
-                    is_completed=False
-                ),
-                Task(
-                    user=fitness_input.user,
-                    title="High-protein meal",
-                    category="nutrition",
-                    due_date=due_date,
-                    is_completed=False
-                ),
-                Task(
-                    user=fitness_input.user,
-                    title="Use public transport",
-                    category="sustainability",
-                    due_date=due_date,
-                    is_completed=False
-                ),
-                Task(
-                    user=fitness_input.user,
-                    title="Strength training",
-                    category="exercise",
-                    due_date=due_date,
-                    is_completed=False
-                ),
-                Task(
-                    user=fitness_input.user,
-                    title="Vegetable intake",
-                    category="nutrition",
-                    due_date=due_date,
-                    is_completed=False
+                    is_completed=False,
+                    points_rewarded=points
                 )
-            ])
-        
-        for task in tasks:
-            try:
-                task.save()
-            except Exception as e:
-                logger.error(f"Error saving fallback task: {str(e)}")
-                continue
+                try:
+                    task.save()
+                    tasks.append(task)
+                except Exception as e:
+                    logger.error(f"Error saving fallback task: {str(e)}")
+                    continue
 
-        logger.info(f"Fallback: Generated {len(tasks)} default tasks for user {fitness_input.user.email}")
+        logger.info(f"Fallback: Generated {len(tasks)} default tasks")
         return [task for task in tasks if task.id is not None]
