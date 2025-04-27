@@ -24,9 +24,8 @@ import React, { useState} from 'react';
 import MyNavbar from './components/MyNavbar/MyNavbar';
 import HomePage from './pages/HomePage';
 import {Groups} from './pages/Groups';
-//import NotificationsPage from './pages/Notifications'
-import ProfilePage from './pages/ProfilePage';
-//import { NotificationProvider } from './contexts/NotificationContext';
+
+import MyPosts from './pages/MyPosts'
 
 
 
@@ -43,8 +42,8 @@ function App() {
     switch (activeTab) {
       case 'home': return <HomePage user={user} setUser={setUser}/>;
       case 'groups': return <Groups user={user} />;
-      //case 'notifications': return < user={user} />;
-      //case 'profile': return <ProfilePage user={user} setUser={setUser} />;
+        case 'my-posts': return <MyPosts user={user} setUser={setUser}/>;
+
       default: return <HomePage user={user} />;
     }
   };

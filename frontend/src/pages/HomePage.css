@@ -5,8 +5,8 @@
   min-height: 100vh;
   background-color: #f8f9fa;
   margin-left: 250px; /* Sidebar width + margin */
-  padding-top: 220px; /* Space for navbar + hero */
-  margin-top:50px;
+  padding-top: 200px; /* Space for navbar + hero */
+
 }
 
 /* Main Content */

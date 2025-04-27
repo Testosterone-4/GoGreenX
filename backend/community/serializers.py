@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post,Group,Comment,Notification
+from .models import Post,Group,Comment
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -76,9 +76,3 @@ class CommentSerializer(serializers.ModelSerializer):
         return obj.likes.count()
 
 
-class NotificationSerializer(serializers.ModelSerializer):
-    sender = UserProfileSerializer(read_only=True)
-
-    class Meta:
-        model = Notification
-        fields = '__all__'
