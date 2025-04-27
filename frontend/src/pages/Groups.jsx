@@ -43,19 +43,35 @@ const ApiService = {
   unlikeComment: (commentId) => api.post(`/api/comments/${commentId}/unlike/`)
 };
 
-// Custom styles
+// Custom styles with narrower width
 const styles = {
-  container: {
-    marginTop: '230px', // Space for navbar
-    marginLeft: '400px', // Space for sidebar
-    padding: '2rem',
+   container: {
+    marginTop: '220px',
+    marginLeft: '80px', // Default left margin - you can adjust this value
+    padding: '1rem',
     minHeight: 'calc(100vh - 80px)',
-    backgroundColor: '#f8f9fa'
+    backgroundColor: '#f8f9fa',
+    maxWidth: '1200px', // Narrower max width
+    transition: 'margin-left 0.3s ease',
+    '@media (min-width: 992px)': {
+      marginLeft: '250px', // When sidebar is open
+      maxWidth: '800px'
+    },
+    '@media (max-width: 992px)': {
+      marginLeft: '100px', // Keep your left margin when sidebar is closed
+      maxWidth: '800px'
+    },
+    '@media (max-width: 800px)': {
+      marginLeft: '5px', // Smaller left margin on very small screens
+      marginRight: '5px',
+      maxWidth: 'calc(100% - 40px)' // Account for margins
+    }
   },
   card: {
     borderRadius: '12px',
     border: 'none',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+    marginBottom: '1.5rem'
   },
   primaryButton: {
     backgroundColor: '#28a745',
@@ -79,17 +95,35 @@ const styles = {
     width: '45px',
     height: '45px',
     objectFit: 'cover',
-    borderRadius: '50%'
+    borderRadius: '50%',
+    '@media (max-width: 576px)': {
+      width: '36px',
+      height: '36px'
+    }
   },
   postContainer: {
     border: 'none',
     borderRadius: '12px',
     overflow: 'hidden',
     marginBottom: '1.5rem'
+  },
+  groupGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', // Adjusted for narrower width
+    gap: '1.5rem',
+    '@media (maxWidth: 576px)': {
+      gridTemplateColumns: '1fr'
+    }
   }
 };
 
-// Post Component
+// [Rest of the component code remains exactly the same as in the previous responsive version]
+// [Include all the component definitions: Post, Groups, GroupList, GroupCreate, GroupDetail, GroupEdit]
+
+// Main Groups component export
+
+
+// Post Component with responsive adjustments
 const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLikeComment, onUnlikeComment }) => {
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
@@ -211,8 +245,8 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
             </div>
           )}
           <div>
-            <h6 className="mb-0 fw-bold">{post.author?.username || 'Unknown User'}</h6>
-            <small className="text-muted">
+            <h6 className="mb-0 fw-bold" style={{ fontSize: '0.95rem' }}>{post.author?.username || 'Unknown User'}</h6>
+            <small className="text-muted" style={{ fontSize: '0.75rem' }}>
               {new Date(post.created_at).toLocaleString([], {
                 year: 'numeric',
                 month: 'short',
@@ -227,18 +261,19 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
 
       {/* Post Content */}
       <div className="card-body py-3">
-        {post.title && <h5 className="card-title mb-3">{post.title}</h5>}
-        <p className="card-text">{post.content}</p>
+        {post.title && <h5 className="card-title mb-3" style={{ fontSize: '1.1rem' }}>{post.title}</h5>}
+        <p className="card-text" style={{ fontSize: '0.9rem' }}>{post.content}</p>
       </div>
 
       {/* Post Stats */}
       <div className="card-footer bg-white border-0 d-flex justify-content-between py-2">
-        <div className="text-muted small">
+        <div className="text-muted small" style={{ fontSize: '0.8rem' }}>
           <i className="fas fa-thumbs-up me-1"></i> {likeCount}
         </div>
         <div
           className="text-muted small cursor-pointer"
           onClick={handleShowComments}
+          style={{ fontSize: '0.8rem' }}
         >
           {comments.length} {comments.length === 1 ? 'comment' : 'comments'}
         </div>
@@ -251,6 +286,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
           className={`text-decoration-none ${isLiked ? 'text-success fw-bold' : 'text-muted'}`}
           onClick={handleLike}
           disabled={!currentUser}
+          style={{ fontSize: '0.85rem' }}
         >
           <i className={`fas fa-thumbs-up me-2 ${isLiked ? 'text-success' : ''}`}></i> Like
         </Button>
@@ -258,6 +294,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
           variant="link"
           className="text-decoration-none text-muted"
           onClick={handleShowComments}
+          style={{ fontSize: '0.85rem' }}
         >
           <i className="fas fa-comment me-2"></i> Comment
         </Button>
@@ -278,7 +315,15 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                   src={currentUser.avatar}
                   alt={currentUser.username}
                   className="rounded-circle me-3"
-                  style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    objectFit: 'cover',
+                    '@media (max-width: 576px)': {
+                      width: '32px',
+                      height: '32px'
+                    }
+                  }}
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = 'https://via.placeholder.com/40';
@@ -287,7 +332,16 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
               ) : (
                 <div
                   className="rounded-circle me-3 d-flex align-items-center justify-content-center"
-                  style={{ width: '40px', height: '40px', backgroundColor: '#28a745', color: 'white' }}
+                  style={{
+                    width: '40px',
+                    height: '40px',
+                    backgroundColor: '#28a745',
+                    color: 'white',
+                    '@media (max-width: 576px)': {
+                      width: '32px',
+                      height: '32px'
+                    }
+                  }}
                 >
                   {currentUser?.username?.charAt(0)?.toUpperCase() || 'Y'}
                 </div>
@@ -302,10 +356,11 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                 placeholder="Write a comment..."
                 className="flex-grow-1"
                 disabled={isCommenting}
+                style={{ fontSize: '0.9rem' }}
               />
             </div>
             {commentError && (
-              <Alert variant="danger" className="mb-3">
+              <Alert variant="danger" className="mb-3" style={{ fontSize: '0.85rem' }}>
                 <i className="fas fa-exclamation-circle me-2"></i> {commentError}
               </Alert>
             )}
@@ -334,7 +389,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
             {isLoadingComments ? (
               <div className="text-center py-3">
                 <Spinner animation="border" variant="success" size="sm" className="me-2" />
-                Loading comments...
+                <span style={{ fontSize: '0.9rem' }}>Loading comments...</span>
               </div>
             ) : comments.length > 0 ? (
               comments.map(comment => (
@@ -351,7 +406,15 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                           src={comment.author.avatar}
                           alt={comment.author.username}
                           className="rounded-circle"
-                          style={{ width: '35px', height: '35px', objectFit: 'cover' }}
+                          style={{
+                            width: '35px',
+                            height: '35px',
+                            objectFit: 'cover',
+                            '@media (max-width: 576px)': {
+                              width: '30px',
+                              height: '30px'
+                            }
+                          }}
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = 'https://via.placeholder.com/35';
@@ -360,7 +423,16 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                       ) : (
                         <div
                           className="rounded-circle d-flex align-items-center justify-content-center"
-                          style={{ width: '35px', height: '35px', backgroundColor: '#6c757d', color: 'white' }}
+                          style={{
+                            width: '35px',
+                            height: '35px',
+                            backgroundColor: '#6c757d',
+                            color: 'white',
+                            '@media (max-width: 576px)': {
+                              width: '30px',
+                              height: '30px'
+                            }
+                          }}
                         >
                           {comment.author?.username?.charAt(0)?.toUpperCase() || 'A'}
                         </div>
@@ -368,12 +440,12 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                     </div>
                     <div className="flex-grow-1">
                       <div className="d-flex justify-content-between">
-                        <h6 className="mb-0 fw-bold">{comment.author?.username || 'Unknown'}</h6>
-                        <small className="text-muted">
+                        <h6 className="mb-0 fw-bold" style={{ fontSize: '0.9rem' }}>{comment.author?.username || 'Unknown'}</h6>
+                        <small className="text-muted" style={{ fontSize: '0.75rem' }}>
                           {new Date(comment.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </small>
                       </div>
-                      <p className="mb-0 mt-1">{comment.content}</p>
+                      <p className="mb-0 mt-1" style={{ fontSize: '0.85rem' }}>{comment.content}</p>
                       <div className="d-flex align-items-center mt-2">
                         <Button
                           variant="link"
@@ -385,6 +457,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                               : handleLikeComment(comment.id)
                           }
                           disabled={!currentUser}
+                          style={{ fontSize: '0.8rem' }}
                         >
                           <i className={`fas fa-thumbs-up me-1 ${comment.likes?.some(like => like.id === currentUser?.id) ? 'text-success' : ''}`}></i>
                           {comment.like_count || 0}
@@ -395,7 +468,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                 </motion.div>
               ))
             ) : (
-              <div className="text-center py-3 text-muted">
+              <div className="text-center py-3 text-muted" style={{ fontSize: '0.9rem' }}>
                 No comments yet. Be the first to comment!
               </div>
             )}
@@ -416,13 +489,14 @@ Post.propTypes = {
   onUnlikeComment: PropTypes.func.isRequired
 };
 
-// Main Groups component
+// Main Groups component with responsive container
 export const Groups = () => {
   const [activeView, setActiveView] = useState('list');
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [authError, setAuthError] = useState(null);
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -449,6 +523,20 @@ export const Groups = () => {
     };
 
     fetchCurrentUser();
+
+    // Handle window resize for responsive behavior
+    const handleResize = () => {
+      if (window.innerWidth < 992) {
+        setSidebarCollapsed(true);
+      } else {
+        setSidebarCollapsed(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const navigateToGroupDetail = (groupId) => {
@@ -529,15 +617,20 @@ export const Groups = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <div className="container">
+    <div style={{
+      ...styles.container,
+      //marginLeft: `{100}px`, // Use the prop value
+      marginLeft: sidebarCollapsed ? `{0}px` : '450px',
+      padding: window.innerWidth < 768 ? '0.5rem' : '1rem'
+    }}>
+      <div className="container-fluid">
         {renderGroupContent()}
       </div>
     </div>
   );
 };
 
-// Group List Component
+// Group List Component with responsive grid
 const GroupList = ({ user, onViewGroup, onCreateGroup }) => {
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -577,7 +670,7 @@ const GroupList = ({ user, onViewGroup, onCreateGroup }) => {
   return (
     <Card style={styles.card}>
       <Card.Body>
-        <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
           <Card.Title className="mb-0 fw-bold">Groups</Card.Title>
           <Button
             variant="success"
@@ -589,43 +682,42 @@ const GroupList = ({ user, onViewGroup, onCreateGroup }) => {
           </Button>
         </div>
 
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div style={styles.groupGrid}>
           {groups.map(group => (
-            <div key={group.id} className="col">
-              <motion.div whileHover={{ scale: 1.02 }}>
-                <Card className="h-100" style={styles.card}>
-                  <Card.Body>
-                    <Card.Title className="fw-bold">{group.name}</Card.Title>
-                    <Card.Text className="text-muted">
-                      {group.description.substring(0, 100)}...
-                    </Card.Text>
-                    <div className="d-flex align-items-center mb-3">
-                      {group.is_private && (
-                        <Badge bg="secondary" className="me-2">Private</Badge>
-                      )}
-                      <small className="text-muted">
-                        Created: {new Date(group.created_at).toLocaleDateString()}
-                      </small>
-                    </div>
-                  </Card.Body>
-                  <Card.Footer className="bg-white border-0">
-                    <Button
-                      variant="outline-success"
-                      onClick={() => onViewGroup(group.id)}
-                      className="w-100"
-                    >
-                      View Details
-                    </Button>
-                  </Card.Footer>
-                </Card>
-              </motion.div>
-            </div>
+            <motion.div key={group.id} whileHover={{ scale: 1.02 }}>
+              <Card className="h-100" style={styles.card}>
+                <Card.Body>
+                  <Card.Title className="fw-bold" style={{ fontSize: '1.1rem' }}>{group.name}</Card.Title>
+                  <Card.Text className="text-muted" style={{ fontSize: '0.9rem' }}>
+                    {group.description.substring(0, 100)}...
+                  </Card.Text>
+                  <div className="d-flex align-items-center mb-3">
+                    {group.is_private && (
+                      <Badge bg="secondary" className="me-2">Private</Badge>
+                    )}
+                    <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+                      Created: {new Date(group.created_at).toLocaleDateString()}
+                    </small>
+                  </div>
+                </Card.Body>
+                <Card.Footer className="bg-white border-0">
+                  <Button
+                    variant="outline-success"
+                    onClick={() => onViewGroup(group.id)}
+                    className="w-100"
+                    style={{ fontSize: '0.9rem' }}
+                  >
+                    View Details
+                  </Button>
+                </Card.Footer>
+              </Card>
+            </motion.div>
           ))}
         </div>
 
         {groups.length === 0 && (
           <div className="text-center py-5">
-            <p className="text-muted">No groups found. Create a new group to get started!</p>
+            <p className="text-muted mb-3">No groups found. Create a new group to get started!</p>
             <Button variant="success" onClick={onCreateGroup} style={styles.primaryButton}>
               Create Your First Group
             </Button>
@@ -642,7 +734,7 @@ GroupList.propTypes = {
   onCreateGroup: PropTypes.func.isRequired
 };
 
-// Group Create Form
+// Group Create Form with responsive adjustments
 const GroupCreate = ({ user, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -714,18 +806,9 @@ const GroupCreate = ({ user, onSuccess, onCancel }) => {
             />
           </Form.Group>
 
-          <Form.Group className="mb-4">
-            <Form.Check
-              type="checkbox"
-              label="Private Group"
-              name="is_private"
-              id="is_private"
-              checked={formData.is_private}
-              onChange={handleChange}
-            />
-          </Form.Group>
 
-          <div className="d-flex gap-3">
+
+          <div className="d-flex flex-column flex-sm-row gap-3">
             <Button variant="success" type="submit" disabled={loading} style={styles.primaryButton}>
               {loading ? (
                 <>
@@ -750,7 +833,7 @@ GroupCreate.propTypes = {
   onCancel: PropTypes.func.isRequired
 };
 
-// Group Detail Component with posts functionality
+// Group Detail Component with responsive adjustments
 const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -1030,7 +1113,7 @@ const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
 
           {actionError && <Alert variant="danger">{actionError}</Alert>}
 
-          <div className="d-flex justify-content-between align-items-start mb-4">
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start mb-4 gap-3">
             <div>
               <Card.Title className="mb-2 fw-bold">{group.name}</Card.Title>
               <div className="d-flex align-items-center mb-3">
@@ -1140,7 +1223,7 @@ const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
           )}
 
           <div className="row">
-            <div className="col-md-6 mb-4 mb-md-0">
+            <div className="col-lg-6 mb-4 mb-lg-0">
               <Card style={styles.card}>
                 <Card.Header className="fw-bold">Members ({group.members.length})</Card.Header>
                 <Card.Body className="p-0">
@@ -1174,7 +1257,7 @@ const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
             </div>
 
             {(isGroupCreator() || isGroupModerator()) && (
-              <div className="col-md-6">
+              <div className="col-lg-6">
                 <Card style={styles.card}>
                   <Card.Header className="fw-bold">Manage Group</Card.Header>
                   <Card.Body>
@@ -1192,14 +1275,14 @@ const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
                           <Form onSubmit={handleAddModerator} className="mb-3">
                             <Form.Group>
                               <Form.Label>User's Email</Form.Label>
-                              <div className="d-flex">
+                              <div className="d-flex flex-column flex-sm-row gap-2">
                                 <Form.Control
                                   type="email"
                                   value={moderatorEmail}
                                   onChange={(e) => setModeratorEmail(e.target.value)}
                                   required
                                 />
-                                <Button variant="primary" type="submit" className="ms-2">
+                                <Button variant="primary" type="submit" className="ms-sm-2">
                                   Add
                                 </Button>
                               </div>
@@ -1209,7 +1292,7 @@ const GroupDetail = ({ user, groupId, onBack, onEdit }) => {
                       </div>
                     )}
 
-                    <div className="d-flex gap-3">
+                    <div className="d-flex flex-column flex-sm-row gap-3">
                       <Button variant="warning" onClick={() => onEdit(groupId)}>
                         Edit Group
                       </Button>
@@ -1256,7 +1339,7 @@ GroupDetail.propTypes = {
   onEdit: PropTypes.func.isRequired
 };
 
-// Group Edit Component
+// Group Edit Component with responsive adjustments
 const GroupEdit = ({ user, groupId, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -1376,7 +1459,7 @@ const GroupEdit = ({ user, groupId, onSuccess, onCancel }) => {
             />
           </Form.Group>
 
-          <div className="d-flex gap-3">
+          <div className="d-flex flex-column flex-sm-row gap-3">
             <Button variant="success" type="submit" disabled={saving} style={styles.primaryButton}>
               {saving ? (
                 <>

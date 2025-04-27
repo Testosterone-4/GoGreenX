@@ -69,7 +69,9 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
 ]
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # React dev server
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    # React dev server
 ]
 
 REST_FRAMEWORK = {
@@ -221,7 +223,7 @@ GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
-
+"""
 # logging configuration
 LOGGING = {
     'version': 1,
@@ -246,7 +248,7 @@ LOGGING = {
         },
     },
 }
-
+"""
 # Channels
 ASGI_APPLICATION = 'community_platform.routing.application'
 CHANNEL_LAYERS = {
