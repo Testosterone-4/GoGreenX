@@ -77,7 +77,6 @@ const MyNavbar = ({ activeTab, setActiveTab }) => {
               }}
               className="nav-item"
             >
-              <i className="fas fa-home"></i>
               <span>Topics</span>
             </Nav.Link>
           </Nav.Item>
@@ -90,7 +89,7 @@ const MyNavbar = ({ activeTab, setActiveTab }) => {
               }}
               className="nav-item"
             >
-              <i className="fas fa-bell"></i>
+              
               <span>My Posts</span>
             </Nav.Link>
           </Nav.Item>
@@ -103,7 +102,6 @@ const MyNavbar = ({ activeTab, setActiveTab }) => {
               }}
               className="nav-item"
             >
-              <i className="fas fa-users"></i>
               <span>Groups</span>
             </Nav.Link>
           </Nav.Item>

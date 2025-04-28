@@ -1,33 +1,35 @@
 import React from "react";
 import logo from "../assets/images/gogreenx_logo.png";
-import "../App.css"; // Your global styles
+import "../App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-dark text-light mt-auto py-5 shadow-sm">
+    <footer className="bg-dark text-light mt-auto py-3 shadow-lg">
       <div className="container">
-        <div className="row justify-content-between align-items-start">
-          {/* Brand & Logo */}
-          <div className="col-md-4 mb-4 mb-md-0">
-            <div className="d-flex align-items-center mb-2">
+        {/* Top Section - Logo and Social */}
+        <div className="row align-items-center">
+          <div className="col-8 col-sm-4 mb-3 mb-sm-0">
+            <div className="d-flex align-items-center">
               <img
                 src={logo}
-                alt="Go Green X Logo"
-                style={{ height: "50px", marginRight: "10px" }}
+                alt="GoGreenX Logo"
+                className="img-fluid"
+                style={{ maxHeight: "40px", width: "auto", marginRight: "10px" }}
               />
-              <h4 className="text-white m-0 fw-semibold">GoGreenX</h4>
+              <h5 className="m-0 fw-bold text-white">GoGreenX</h5>
             </div>
-            <p className="small text-muted">
-              Empowering sustainable and healthy lifestyles.
-            </p>
-            <div className="d-flex mx-5 gap-3 mt-2">
+          </div>
+          
+          <div className="col-4 col-sm-8 text-end">
+            <div className="d-flex justify-content-end gap-3">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-light hover-opacity"
+                className="text-light fs-5 social-icon"
+                aria-label="Facebook"
               >
                 <FaFacebookF />
               </a>
@@ -35,7 +37,8 @@ const Footer = () => {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-light hover-opacity"
+                className="text-light fs-5 social-icon"
+                aria-label="Twitter"
               >
                 <FaTwitter />
               </a>
@@ -43,49 +46,47 @@ const Footer = () => {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-light hover-opacity"
+                className="text-light fs-5 social-icon"
+                aria-label="Instagram"
               >
                 <FaInstagram />
               </a>
             </div>
           </div>
+        </div>
 
-          {/* Legal Links
-          <div className="col-md-4 mb-4 mb-md-0">
-            <h6 className="text-white mb-3">Legal</h6>
-            <ul className="list-unstyled">
-              <li>
-                <a href="/training" className="footer-link">
-                  training
-                </a>
-              </li>
-              <li>
-                <a href="/nutrition" className="footer-link">
-                  Privacy Policy
-                </a>
-              </li>
-              <li>
-                <a href="/forum" className="footer-link">
-                  Cookie Settings
-                </a>
-              </li>
-            </ul>
-          </div> */}
-
-          {/* Contact Info */}
-          <div className="col-md-3">
-            <h6 className="text-white mb-3">Contact</h6>
+        {/* Middle Section - Tagline and Contact */}
+        <div className="row mt-2">
+          <div className="col-12 col-sm-6 mb-3 mb-sm-0">
             <p className="small text-muted mb-1">
+              Empowering sustainable and healthy lifestyles.
+            </p>
+            <div className="d-sm-none">
+              <h6 className="fw-semibold mb-0">Train Smarter. <span className="fw-light text-muted">Go Greener.</span></h6>
+            </div>
+          </div>
+          
+          <div className="col-12 col-sm-6 text-sm-end">
+            <p className="small mb-1">
               Email:{" "}
               <a
-                href="mailto:support@greenhub.com"
-                className="text-decoration-none text-light"
+                href="mailto:support@gogreenx.com"
+                className="text-light text-decoration-underline"
               >
-                support@greenhub.com
+                support@gogreenx.com
               </a>
             </p>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <hr className="border-secondary my-2" />
+
+        {/* Bottom Section - Copyright */}
+        <div className="row">
+          <div className="col-12 text-center">
             <p className="small text-muted mb-0">
-              © {new Date().getFullYear()} GoGreenX. All rights reserved.
+              &copy; {new Date().getFullYear()} GoGreenX. All rights reserved. Made with 💚 by GoGreenX Team
             </p>
           </div>
         </div>

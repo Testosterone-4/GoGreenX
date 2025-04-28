@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import uuid
-from django.core.validators import MinValueValidator
+# from gamification.models import UserPoints
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
@@ -20,7 +20,6 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     avatar = models.URLField(blank=True)
     location = models.CharField(max_length=100, blank=True)
-    points = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
 class FitnessInput(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

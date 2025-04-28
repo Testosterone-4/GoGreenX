@@ -366,14 +366,8 @@ const Home = () => {
                           <div className="flex-grow-1 ms-3">
                             <h5 className="mb-1">Sarah Johnson</h5>
                             <p className="text-muted small mb-0">
-                              Member since 2022
+                              Member since 2025
                             </p>
-                          </div>
-                          <div className="flex-shrink-0">
-                            {/* <button className="btn btn-sm btn-outline-success rounded-pill">
-                              <i className="bi bi-play-fill me-1"></i> Watch
-                              Story
-                            </button> */}
                           </div>
                         </div>
                       </div>
@@ -384,34 +378,6 @@ const Home = () => {
             </div>
           </div>
         </section>
-
-        {/* CTA Section */}
-        {/* <section className="py-5 bg-success text-white">
-          <div className="container py-5">
-            <div className="row justify-content-center">
-              <div className="col-lg-8 text-center" data-aos="zoom-in">
-                <h2 className="display-5 fw-bold mb-4">
-                  Ready to Transform Your Fitness Journey?
-                </h2>
-                <p className="lead mb-5 opacity-85">
-                  Join thousands of eco-conscious athletes making a difference
-                  one workout at a time.
-                </p>
-                <div className="d-flex flex-wrap gap-3 justify-content-center">
-                  <button className="btn btn-light btn-lg rounded-pill px-4 py-3 fw-medium text-success shadow-sm">
-                    Start 7-Day Free Trial
-                  </button>
-                  <button className="btn btn-outline-light btn-lg rounded-pill px-4 py-3 fw-medium">
-                    Learn More
-                  </button>
-                </div>
-                <p className="small mt-4 opacity-75">
-                  No credit card required • Cancel anytime
-                </p>
-              </div>
-            </div>
-          </div>
-        </section> */}
       </div>
     </>
   );
