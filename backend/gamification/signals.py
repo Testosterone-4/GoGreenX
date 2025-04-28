@@ -1,5 +1,5 @@
 from django.dispatch import receiver
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from users.models import User
 from .models import UserPoints, PointsTransaction, UserBadge, Badge, Notification
 from tasks.models import Task
@@ -73,7 +73,11 @@ def notify_user_about_new_badge(sender, instance, created, **kwargs):
             message=message,
             badge=badge
         )
-
+@receiver(post_save, sender=User)
+def create_user_points(sender, instance, created, **kwargs):
+    """Create UserPoints automatically when a new user is created"""
+    if created:
+        UserPoints.objects.create(user=instance)
 
 
 
