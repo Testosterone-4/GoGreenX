@@ -70,6 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'green_living_hub.wsgi.application'
 
+
 # Database
 DATABASES = {
     'default': dj_database_url.config(
@@ -80,7 +81,10 @@ DATABASES = {
     )
 }
 
+
 # REST Framework
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
