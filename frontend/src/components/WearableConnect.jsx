@@ -2,7 +2,7 @@ import React, { useState } from 'react';
   import { Form, Button, Container, Alert } from 'react-bootstrap';
   import axios from 'axios';
   import { useNavigate } from 'react-router-dom';
-
+const API_HOST = import.meta.env.VITE_API_HOST;
   const WearableConnect = () => {
     const [provider, setProvider] = useState('');
     const [error, setError] = useState('');
@@ -15,7 +15,7 @@ import React, { useState } from 'react';
       }
       try {
         const response = await axios.post(
-          'http://localhost:8000/api/wearables/auth/',
+          `${API_HOST}/api/wearables/auth/`,
           { provider },
           { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
         );

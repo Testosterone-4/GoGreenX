@@ -24,7 +24,7 @@ import {
   Col,
   ProgressBar,
 } from "react-bootstrap";
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 const Actions = () => {
   const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
@@ -48,7 +48,7 @@ const Actions = () => {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(
-          "http://localhost:8000/api/tasks/list/",
+          `${API_HOST}/api/tasks/list/`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -84,7 +84,7 @@ const Actions = () => {
   const refreshToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     const response = await axios.post(
-      "http://localhost:8000/auth/jwt/refresh/",
+      `${API_HOST}/auth/jwt/refresh/`,
       { refresh: refreshToken }
     );
     localStorage.setItem("accessToken", response.data.access);
@@ -106,7 +106,7 @@ const Actions = () => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
-        "http://localhost:8000/api/tasks/list/",
+        `${API_HOST}/api/tasks/list/`,
         {
           ...taskData,
           points_rewarded: parseInt(taskData.points_rewarded),
@@ -116,7 +116,7 @@ const Actions = () => {
         }
       );
       const updatedTasks = await axios.get(
-        "http://localhost:8000/api/tasks/list/",
+        `${API_HOST}/api/tasks/list/`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -141,7 +141,7 @@ const Actions = () => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
-        `http://localhost:8000/api/tasks/list/${taskId}/`,
+        `${API_HOST}/api/tasks/list/${taskId}/`,
         { is_completed: !isCompleted },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -161,7 +161,7 @@ const Actions = () => {
     setLoading((prev) => ({ ...prev, [taskId]: true }));
     try {
       const token = localStorage.getItem("accessToken");
-      await axios.delete(`http://localhost:8000/api/tasks/delete/${taskId}/`, {
+      await axios.delete(`${API_HOST}/api/tasks/delete/${taskId}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(tasks.filter((task) => task.id !== taskId));

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ListGroup, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
   const [tasks, setTasks] = useState(initialTasks || []);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) throw new Error('No refresh token found');
-      const response = await axios.post('http://localhost:8000/auth/jwt/refresh/', {
+      const response = await axios.post(`${API_HOST}/auth/jwt/refresh/`, {
         refresh: refreshToken
       });
       localStorage.setItem('accessToken', response.data.access);
@@ -30,7 +30,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     try {
       let token = localStorage.getItem('accessToken');
       if (!token) throw new Error('No access token found');
-      const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+      const response = await axios.get(`${API_HOST}/api/tasks/list/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setTasks(response.data);
@@ -41,7 +41,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
         const newToken = await refreshToken();
         if (newToken) {
           try {
-            const response = await axios.get('http://localhost:8000/api/tasks/list/', {
+            const response = await axios.get(`${API_HOST}/api/tasks/list/`, {
               headers: { Authorization: `Bearer ${newToken}` },
             });
             setTasks(response.data);
@@ -62,7 +62,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
     try {
       let token = localStorage.getItem('accessToken');
       if (!token) throw new Error('No access token found');
-      const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+      const response = await axios.patch(`${API_HOST}/api/tasks/list/${taskId}/`, {
         is_completed: !isCompleted,
       }, {
         headers: { Authorization: `Bearer ${token}` },
@@ -76,7 +76,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
         const newToken = await refreshToken();
         if (newToken) {
           try {
-            const response = await axios.patch(`http://localhost:8000/api/tasks/list/${taskId}/`, {
+            const response = await axios.patch(``${API_HOST}/api/tasks/list/${taskId}/`, {
               is_completed: !isCompleted,
             }, {
               headers: { Authorization: `Bearer ${newToken}` },

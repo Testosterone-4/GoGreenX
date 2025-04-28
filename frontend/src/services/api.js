@@ -1,11 +1,11 @@
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_HOST = import.meta.env.VITE_API_HOST;
 
 export const fetchCurrentUser = async () => {
   const token = localStorage.getItem('accessToken');
   if (!token) return null;
 
   try {
-    const response = await fetch('http://127.0.0.1:8000/auth/users/me/', {
+    const response = await fetch(`${API_HOST}/auth/users/me/`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -22,7 +22,7 @@ export const fetchCurrentUser = async () => {
 
 export const fetchPosts = async () => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/posts/`, {
+  const response = await fetch(`${API_HOST}/api/posts/`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -50,7 +50,7 @@ export const fetchNotifications = async () => {
 
 export const fetchAuthorPosts = async (authorId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/posts/${authorId}/author_posts/`, {
+  const response = await fetch(`${API_HOST}/api/posts/${authorId}/author_posts/`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -108,7 +108,7 @@ export const createPost = async (postData) => {
   if (!token) throw new Error('No authentication token found');
 
   try {
-    const response = await fetch(`${API_BASE_URL}/posts/`, {
+    const response = await fetch(`${API_HOST}/api/posts/`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -138,7 +138,7 @@ export const createPost = async (postData) => {
 };
 export const likePost = async (postId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}/like/`, {
+  const response = await fetch(`${API_HOST}/api/posts/${postId}/like/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -151,7 +151,7 @@ export const likePost = async (postId) => {
 
 export const unlikePost = async (postId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}/unlike/`, {
+  const response = await fetch(`${API_HOST}/api/posts/${postId}/unlike/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -164,7 +164,7 @@ export const unlikePost = async (postId) => {
 
 export const getPostGroupName = async (postId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/posts/${postId}/group_name/`, {
+  const response = await fetch(`${API_HOST}/api/posts/${postId}/group_name/`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -192,7 +192,7 @@ export const createComment = async (postId, content) => {
   if (!token) throw new Error('No authentication token found');
 
   try {
-    const response = await fetch(`${API_BASE_URL}/comments/`, {
+    const response = await fetch(`${API_HOST}/api/comments/`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -219,7 +219,7 @@ export const createComment = async (postId, content) => {
 export const likeComment = async (commentId) => {
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/comments/${commentId}/like/`, {
+    const response = await fetch(`${API_HOST}/api/comments/${commentId}/like/`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -242,7 +242,7 @@ export const likeComment = async (commentId) => {
 export const unlikeComment = async (commentId) => {
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/comments/${commentId}/unlike/`, {
+    const response = await fetch(`${API_HOST}/api/comments/${commentId}/unlike/`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -264,7 +264,7 @@ export const unlikeComment = async (commentId) => {
 export const getPostComments = async (postId) => {
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/posts/${postId}/comments/`, {
+    const response = await fetch(`${API_HOST}/api/posts/${postId}/comments/`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -281,7 +281,7 @@ export const getPostComments = async (postId) => {
 export const createGroup = async (groupData) => {
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/groups/`, {
+    const response = await fetch(`${API_HOST}/api/groups/`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -310,7 +310,7 @@ export const createGroup = async (groupData) => {
 
 export const fetchGroups = async () => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/groups/`, {
+  const response = await fetch(`${API_HOST}/api/groups/`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -322,7 +322,7 @@ export const fetchGroups = async () => {
 
 export const joinGroup = async (groupId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/groups/${groupId}/join/`, {
+  const response = await fetch(`${API_HOST}/api/groups/${groupId}/join/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -335,7 +335,7 @@ export const joinGroup = async (groupId) => {
 
 export const leaveGroup = async (groupId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/groups/${groupId}/leave/`, {
+  const response = await fetch(`${API_HOST}/api/groups/${groupId}/leave/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -348,7 +348,7 @@ export const leaveGroup = async (groupId) => {
 
 export const addModerator = async (groupId, userId) => {
   const token = localStorage.getItem('accessToken');
-  const response = await fetch(`${API_BASE_URL}/groups/${groupId}/add_moderator/`, {
+  const response = await fetch(`${API_HOST}/api/groups/${groupId}/add_moderator/`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -363,7 +363,7 @@ export const addModerator = async (groupId, userId) => {
 export const getGroupPosts = async (groupId) => {
   const token = localStorage.getItem('accessToken');
   try {
-    const response = await fetch(`${API_BASE_URL}/groups/${groupId}/posts/`, {
+    const response = await fetch(`${API_HOST}/api/groups/${groupId}/posts/`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'

@@ -27,7 +27,7 @@ import {
   Tabs,
 } from "react-bootstrap";
 import { formatDistanceToNow } from "date-fns";
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 const Dashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ const Dashboard = () => {
 
       const responses = await Promise.all(
         endpoints.map((endpoint) =>
-          axios.get(`http://localhost:8000${endpoint}`, {
+          axios.get(`${API_HOST}${endpoint}`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         )
@@ -86,7 +86,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
-        `http://localhost:8000/api/notifications/${notificationId}/mark-as-read/`,
+        `${API_HOST}/api/notifications/${notificationId}/mark-as-read/`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -100,7 +100,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
-        "http://localhost:8000/api/notifications/mark-all-read/",
+        `${API_HOST}/api/notifications/mark-all-read/`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

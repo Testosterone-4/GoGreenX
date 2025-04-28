@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useGoogleLogin } from '@react-oauth/google';
 
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 const LoginModal = ({ show, handleClose }) => {
   // Define the green color as a constant to ensure consistency
   const greenColor = '#28a745';
@@ -48,7 +48,7 @@ const LoginModal = ({ show, handleClose }) => {
     onSuccess: async (tokenResponse) => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://127.0.0.1:8000/api/auth/google/', {
+        const response = await fetch(`${API_HOST}/api/auth/google/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ const LoginModal = ({ show, handleClose }) => {
     try {
       setIsLoading(true);
       setResetStatus(null);
-      const response = await fetch('http://127.0.0.1:8000/auth/users/reset_password/', {
+      const response = await fetch(`${API_HOST}/auth/users/reset_password/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const LoginModal = ({ show, handleClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/jwt/create/', {
+      const response = await fetch(`${API_HOST}/auth/jwt/create/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

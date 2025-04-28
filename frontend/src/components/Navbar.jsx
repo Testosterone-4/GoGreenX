@@ -13,7 +13,7 @@ import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -40,7 +40,7 @@ const Navbar = () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       try {
-        const res = await axios.get("http://localhost:8000/auth/users/me/", {
+        const res = await axios.get(`${API_HOST}/auth/users/me/`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

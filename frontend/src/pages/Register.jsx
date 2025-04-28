@@ -5,6 +5,7 @@ import "../assets/css/registerStyles.css";
 import { useGoogleLogin } from "@react-oauth/google";
 import axios from "axios";
 
+const API_HOST = import.meta.env.VITE_API_HOST;
 const AuthModals = ({ show, handleClose }) => {
   const [signupData, setSignupData] = useState({
     username: '',
@@ -67,7 +68,7 @@ const AuthModals = ({ show, handleClose }) => {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/auth/users/', {
+      const response = await fetch(`${API_HOST}/auth/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,7 +124,7 @@ const AuthModals = ({ show, handleClose }) => {
 
     try {
       const response = await axios.post(
-        'http://127.0.0.1:8000/api/auth/google/',
+        `${API_HOST}/api/auth/google/`,
         {
           access_token: tokenResponse.access_token
         },

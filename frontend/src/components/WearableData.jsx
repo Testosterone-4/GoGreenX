@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
   import { Container, Card, Button, ListGroup, Alert } from 'react-bootstrap';
   import axios from 'axios';
   import { useNavigate } from 'react-router-dom';
-
+const API_HOST = import.meta.env.VITE_API_HOST;
   const WearableData = () => {
     const [healthData, setHealthData] = useState([]);
     const [error, setError] = useState('');
@@ -10,7 +10,7 @@ import React, { useState, useEffect } from 'react';
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/api/wearables/data/', {
+        const response = await axios.get(`${API_HOST}/api/wearables/data/`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
         });
         setHealthData(response.data);
@@ -27,7 +27,7 @@ import React, { useState, useEffect } from 'react';
     const handleSync = async (provider) => {
       try {
         await axios.post(
-          'http://localhost:8000/api/wearables/sync/',
+          `${API_HOST}/api/wearables/sync/`,
           { provider },
           { headers: { Authorization: `Bearer ${localStorage.getItem('accessToken')}` } }
         );
