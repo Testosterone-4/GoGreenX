@@ -291,34 +291,7 @@ const AuthModals = ({ show, handleClose }) => {
               </Button>
             </Form>
 
-            <div className="divider-with-text my-3">
-              <span className="divider-text">or</span>
-            </div>
 
-            <Button
-              onClick={login}
-              className="ggx-google-btn w-100"
-              variant="outline-primary"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <img
-                    src="https://developers.google.com/identity/images/g-logo.png"
-                    alt="Google"
-                    width="20"
-                    height="20"
-                    className="me-2"
-                  />
-                  Sign up with Google
-                </>
-              )}
-            </Button>
           </>
         )}
       </Modal.Body>

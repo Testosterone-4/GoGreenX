@@ -48,6 +48,23 @@ export const fetchNotifications = async () => {
   }
 };
 
+export const fetchAuthorPosts = async (authorId) => {
+  const token = localStorage.getItem('accessToken');
+  const response = await fetch(`${API_BASE_URL}/posts/${authorId}/author_posts/`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
 export const markNotificationAsRead = async (notificationId) => {
   const token = localStorage.getItem('accessToken');
   try {
