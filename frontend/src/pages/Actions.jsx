@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { format, parseISO } from "date-fns";
@@ -40,6 +40,9 @@ const Actions = () => {
     due_date: format(new Date(), "yyyy-MM-dd"),
     points_rewarded: 10,
   });
+
+  // Create ref for the title input
+  const titleInputRef = useRef(null);
 
   // Generate points from 10 to 100 in steps of 5
   const pointOptions = Array.from({ length: 19 }, (_, i) => 10 + i * 5);
@@ -302,6 +305,7 @@ const Actions = () => {
                   <Row className="g-3">
                     <Col md={4}>
                       <Form.Control
+                        ref={titleInputRef} // Add the ref here
                         placeholder="Task title"
                         value={newTask.title}
                         onChange={(e) =>
@@ -409,6 +413,7 @@ const Actions = () => {
                     <Button
                       variant="outline-success"
                       className="rounded-pill px-4"
+                      onClick={() => titleInputRef.current?.focus()} // Add onClick handler here
                     >
                       Create First Task
                     </Button>
