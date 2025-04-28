@@ -1,3 +1,11 @@
+
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import FitnessForm from '../components/FitnessForm';
+import TaskList from '../components/TaskList';
+const API_HOST = import.meta.env.VITE_API_HOST;
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +25,7 @@ import {
 } from "react-bootstrap";
 import { BsLightningFill, BsCheckCircle, BsArrowRepeat } from "react-icons/bs";
 
+
 const FitnessPlan = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
@@ -30,15 +39,14 @@ const FitnessPlan = () => {
 
   const refreshToken = async () => {
     try {
-      const refreshToken = localStorage.getItem("refreshToken");
-      if (!refreshToken) throw new Error("No refresh token found");
-      const response = await axios.post(
-        "http://localhost:8000/auth/jwt/refresh/",
-        {
-          refresh: refreshToken,
-        }
-      );
-      localStorage.setItem("accessToken", response.data.access);
+
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) throw new Error('No refresh token found');
+      const response = await axios.post(`${API_HOST}/auth/jwt/refresh/`, {
+        refresh: refreshToken
+      });
+      localStorage.setItem('accessToken', response.data.access);
+
       return response.data.access;
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -52,14 +60,14 @@ const FitnessPlan = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      let token = localStorage.getItem("accessToken");
-      if (!token) throw new Error("No access token found");
-      const response = await axios.get(
-        "http://localhost:8000/api/tasks/list/",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+
+      let token = localStorage.getItem('accessToken');
+      if (!token) throw new Error('No access token found');
+      const response = await axios.get(`${API_HOST}/api/tasks/list/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('Fetched Tasks:', response.data); // Log once here
+
       setTasks(response.data);
       setError(null);
     } catch (error) {
@@ -68,12 +76,13 @@ const FitnessPlan = () => {
         const newToken = await refreshToken();
         if (newToken) {
           try {
-            const response = await axios.get(
-              "http://localhost:8000/api/tasks/list/",
-              {
-                headers: { Authorization: `Bearer ${newToken}` },
-              }
-            );
+
+            const response = await axios.get(`${API_HOST}/api/tasks/list/`, {
+              headers: { Authorization: `Bearer ${newToken}` },
+            });
+            console.log('Fetched Tasks (Retry):', response.data);
+
+
             setTasks(response.data);
             setError(null);
           } catch (retryError) {

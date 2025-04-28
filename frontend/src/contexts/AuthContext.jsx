@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const response = await axios.get('http://127.0.0.1:8000/auth/users/me/', {
+      const response = await axios.get(`${API_HOST}/auth/users/me/`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

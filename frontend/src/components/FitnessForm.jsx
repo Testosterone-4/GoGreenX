@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+const API_HOST = import.meta.env.VITE_API_HOST;
 const FitnessForm = ({ onPlanGenerated }) => {
   const [formData, setFormData] = useState({
     weight: '',
@@ -20,7 +20,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
     try {
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) throw new Error('No refresh token found');
-      const response = await axios.post('http://localhost:8000/auth/jwt/refresh/', {
+      const response = await axios.post(`${API_HOST}/auth/jwt/refresh/`, {
         refresh: refreshToken
       });
       localStorage.setItem('accessToken', response.data.access);
@@ -58,7 +58,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
         navigate('/login');
         return;
       }
-      const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
+      const response = await axios.post(`${API_HOST}/api/tasks/plan/`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log('Generated Plan:', response.data);
@@ -78,7 +78,7 @@ const FitnessForm = ({ onPlanGenerated }) => {
         const newToken = await refreshToken();
         if (newToken) {
           try {
-            const response = await axios.post('http://localhost:8000/api/tasks/plan/', formData, {
+            const response = await axios.post(`${API_HOST}/api/tasks/plan/`, formData, {
               headers: { Authorization: `Bearer ${newToken}` },
             });
             if (onPlanGenerated) {

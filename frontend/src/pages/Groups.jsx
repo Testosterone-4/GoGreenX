@@ -5,9 +5,10 @@ import { Button, Card, Form, Alert, Spinner, Badge, Modal, ListGroup } from 'rea
 import { motion } from 'framer-motion';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const API_HOST = import.meta.env.VITE_API_HOST;
 // Create an axios instance with authentication
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000'
+  baseURL: `${API_HOST}`
 });
 
 // Add request interceptor to include token in all requests
