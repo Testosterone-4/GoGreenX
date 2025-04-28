@@ -74,7 +74,11 @@ def notify_user_about_new_badge(sender, instance, created, **kwargs):
             badge=badge
         )
 
+@receiver(post_save, sender=User)
+def notify_user_about_new_badge(sender, instance, created, **kwargs):
 
+    if created:
+        UserPoints.objects.create(user = instance)
 
 
 
