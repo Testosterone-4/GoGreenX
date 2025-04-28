@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
     'social_django',
+    'django_extensions',
 
     'users.apps.UsersConfig',
     'wearables.apps.WearablesConfig',
@@ -223,6 +224,7 @@ GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
 
 # logging configuration
+"""
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -245,7 +247,7 @@ LOGGING = {
             'propagate': True,
         },
     },
-}
+} """
 
 # Channels
 ASGI_APPLICATION = 'community_platform.routing.application'

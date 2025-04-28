@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from .models import Group, Post, Comment, Notification
+from .models import Group, Post, Comment
 from .serializers import (
     UserProfileSerializer, GroupDetailSerializer,
-    PostSerializer, CommentSerializer, NotificationSerializer
+    PostSerializer, CommentSerializer
 )
 User = get_user_model()
 
-from django.db.models import Count
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -51,14 +51,6 @@ class GroupViewSet(viewsets.ModelViewSet):
         user = User.objects.get(id=user_id)
         group.moderators.add(user)
 
-        # Create notification
-        Notification.objects.create(
-            recipient=user,
-            sender=request.user,
-            notification_type='group_invite',
-            group=group
-        )
-
         return Response({'status': 'moderator added'})
 
     @action(detail=True, methods=['get'])
@@ -95,15 +87,6 @@ class PostViewSet(viewsets.ModelViewSet):
         post = self.get_object()
         post.likes.add(request.user)
 
-        # Create notification
-        if post.author != request.user:
-            Notification.objects.create(
-                recipient=post.author,
-                sender=request.user,
-                notification_type='like_post',
-                post=post
-            )
-
         return Response({'status': 'liked'})
 
     @action(detail=True, methods=['post'])
@@ -134,6 +117,12 @@ class PostViewSet(viewsets.ModelViewSet):
             status=status.HTTP_200_OK
         )
 
+    @action(detail=True, methods=['get'])
+    def author_posts(self, request, pk=None):
+        queryset = Post.objects.filter(author=pk)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -152,14 +141,6 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment = self.get_object()
         comment.likes.add(request.user)
 
-        # Create notification
-        if comment.author != request.user:
-            Notification.objects.create(
-                recipient=comment.author,
-                sender=request.user,
-                notification_type='like_comment',
-                comment=comment
-            )
 
         return Response({'status': 'liked'})
 
@@ -170,21 +151,3 @@ class CommentViewSet(viewsets.ModelViewSet):
         return Response({'status': 'unliked'})
 
 
-class NotificationViewSet(viewsets.ModelViewSet):
-    serializer_class = NotificationSerializer
-
-    def get_queryset(self):
-        return Notification.objects.filter(recipient=self.request.user)
-
-    @action(detail=True, methods=['post'])
-    def mark_as_read(self, request, pk=None):
-        notification = self.get_object()
-        notification.is_read = True
-        notification.save()
-        return Response({'status': 'marked as read'})
-
-    @action(detail=False, methods=['post'])
-    def mark_all_as_read(self, request):
-        notifications = self.get_queryset().filter(is_read=False)
-        notifications.update(is_read=True)
-        return Response({'status': 'all marked as read'})
