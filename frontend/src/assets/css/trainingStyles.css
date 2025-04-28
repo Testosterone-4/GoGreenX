@@ -1,21 +1,80 @@
-.container{
-  padding-top: 50px;
-}
-.page-link {
-  border-radius: 0.375rem;
+.training-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
 
-.page-item.active .page-link {
-  background-color: #198754;
-  border-color: #198754;
-  color: #fff;
+.exercise-card {
+  transition: all 0.3s ease;
+  border: none !important;
 }
 
-.card-title {
-  font-size: 1rem;
+.exercise-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
-.card-img-top {
+.exercise-image-container {
   height: 180px;
+  overflow: hidden;
+  background-color: #f3fdf6;
+}
+
+.exercise-image {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.exercise-card:hover .exercise-image {
+  transform: scale(1.1);
+}
+
+/* Pagination styles */
+.pagination .page-link {
+  color: #28a745;
+  border: none;
+  margin: 0 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff !important;
+}
+
+.pagination .page-link:hover {
+  background-color: #eaf7e3;
+}
+
+/* Modal styles */
+.exercise-modal .modal-content {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.exercise-modal .modal-header {
+  background-color: #f8f9fa;
+}
+
+.exercise-modal .modal-body {
+  padding: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .exercise-image-container {
+    height: 150px;
+  }
+
+  .exercise-modal .modal-body {
+    padding: 1rem;
+  }
 }
