@@ -1,25 +1,20 @@
-import React, {useState, useEffect} from "react";
-import {NavLink, useNavigate} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
-import {Menu} from "lucide-react";
-import { motion} from "framer-motion";
+import { Menu } from "lucide-react";
+import { motion } from "framer-motion";
 import logo from "../assets/images/gogreenx_logo.png";
 import "../assets/css/navbarStyles.css";
-
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
-import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
-
-
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [user, setUser] = useState(null);
-  const [language, setLanguage] = useState("EN"); // Default to English
   const navigate = useNavigate();
 
   const Motion = motion.div;
@@ -28,7 +23,6 @@ const Navbar = () => {
     const offcanvasEl = document.getElementById("sidebarMenu");
 
     if (offcanvasEl) {
-      // Try using Bootstrap's JS instance method first
       const offcanvasInstance =
         window.bootstrap?.Offcanvas.getInstance(offcanvasEl) ||
         new window.bootstrap.Offcanvas(offcanvasEl);
@@ -64,13 +58,8 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const handleLanguageChange = (lang) => {
-    setLanguage(lang);
-    console.log(`Switch to ${lang}`);
-    // Add logic to actually switch the language later
-  };
-
   const isLoggedIn = !!user;
+
   useEffect(() => {
     const sidebar = document.getElementById("sidebarMenu");
     const toggleBtn = document.querySelector(".sidebar-toggle-btn");
@@ -90,6 +79,7 @@ const Navbar = () => {
       }
     };
   }, []);
+
   return (
     <>
       <nav className="navbar px-4 py-2 navbar-custom fixed-top">
@@ -109,85 +99,48 @@ const Navbar = () => {
               <img
                 src={logo}
                 alt="logo"
-                style={{width: "70px", height: "70px"}}
+                style={{ width: "70px", height: "70px" }}
               />
             </NavLink>
           </div>
 
-          
           {/* Desktop nav items */}
           <div className="d-none d-lg-flex align-items-center gap-3 me-4">
-            <ul className="navbar-nav flex-row me-3">
-              {["training", "nutrition", "community"].map((route) => (
-
-                <li className="nav-item mx-2" key={route}>
-                  <NavLink
-                    to={`/${route}`}
-                    className={({isActive}) =>
-                      `nav-link ${isActive ? "active" : ""}`
-                    }
-                  >
-                    {route.charAt(0).toUpperCase() + route.slice(1)}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-
-            <div className="d-flex align-items-center">
-              {["dashboard", "actions", "fitness-plan", "profile"].map(
-                (route) => (
-                  <NavLink
-                    key={route}
-                    to={`/${route}`}
-                    className={({isActive}) =>
-                      `nav-link mx-2 ${isActive ? "active" : ""}`
-                    }
-                  >
-                    {route
-                      .replace("-", " ")
-                      .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  </NavLink>
-                )
-              )}
-            </div>
-
-            <div className="dropdown">
-              <button
-                className="btn btn-outline-dark dropdown-toggle d-flex align-items-center"
-                type="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <FaGlobe style={{marginRight: "8px"}} />
-                {language}
-              </button>
-
-              <ul className="dropdown-menu dropdown-menu-dark">
-                <li>
-                  <button
-                    className={`dropdown-item ${
-                      language === "EN" ? "active" : ""
-                    }`}
-                    onClick={() => handleLanguageChange("EN")}
-                  >
-                    <FaFlagUsa style={{marginRight: "8px"}} /> EN
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`dropdown-item ${
-                      language === "AR" ? "active" : ""
-                    }`}
-                    onClick={() => handleLanguageChange("AR")}
-                  >
-                    <FaFlag style={{marginRight: "8px"}} /> AR
-                  </button>
-                </li>
-              </ul>
-            </div>
-
             {isLoggedIn ? (
               <>
+                <ul className="navbar-nav flex-row me-3">
+                  {["training", "nutrition", "community"].map((route) => (
+                    <li className="nav-item mx-2" key={route}>
+                      <NavLink
+                        to={`/${route}`}
+                        className={({ isActive }) =>
+                          `nav-link ${isActive ? "active" : ""}`
+                        }
+                      >
+                        {route.charAt(0).toUpperCase() + route.slice(1)}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="d-flex align-items-center">
+                  {["dashboard", "actions", "fitness-plan", "profile"].map(
+                    (route) => (
+                      <NavLink
+                        key={route}
+                        to={`/${route}`}
+                        className={({ isActive }) =>
+                          `nav-link mx-2 ${isActive ? "active" : ""}`
+                        }
+                      >
+                        {route
+                          .replace("-", " ")
+                          .replace(/\b\w/g, (l) => l.toUpperCase())}
+                      </NavLink>
+                    )
+                  )}
+                </div>
+
                 <motion.div
                   className="navbar-user-greeting flex"
                   initial="hidden"
@@ -204,10 +157,10 @@ const Navbar = () => {
                     <motion.span
                       key={index}
                       variants={{
-                        hidden: {opacity: 0, y: -5},
-                        visible: {opacity: 1, y: 0},
+                        hidden: { opacity: 0, y: -5 },
+                        visible: { opacity: 1, y: 0 },
                       }}
-                      transition={{duration: 0.4}}
+                      transition={{ duration: 0.4 }}
                     >
                       {char}
                     </motion.span>
@@ -220,6 +173,20 @@ const Navbar = () => {
               </>
             ) : (
               <>
+                <ul className="navbar-nav flex-row me-3">
+                  {["training", "nutrition"].map((route) => (
+                    <li className="nav-item mx-2" key={route}>
+                      <NavLink
+                        to={`/${route}`}
+                        className={({ isActive }) =>
+                          `nav-link ${isActive ? "active" : ""}`
+                        }
+                      >
+                        {route.charAt(0).toUpperCase() + route.slice(1)}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
                 <button
                   className="navbar-auth-btn"
                   onClick={() => setShowLogin(true)}
@@ -243,14 +210,14 @@ const Navbar = () => {
           tabIndex="-1"
           id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel"
-          style={{height: "100vh"}}
+          style={{ height: "100vh" }}
         >
           <div className="offcanvas-header">
             <NavLink className="navbar-brand fw-bold px-3 py-2 rounded" to="/">
               <img
                 src={logo}
                 alt="logo"
-                style={{width: "70px", height: "70px"}}
+                style={{ width: "70px", height: "70px" }}
               />
             </NavLink>
             <button
@@ -264,74 +231,51 @@ const Navbar = () => {
             {isLoggedIn && (
               <motion.span
                 className="navbar-user-greeting mb-3"
-                initial={{opacity: 0, y: -5}}
-                animate={{opacity: 1, y: 0}}
-                transition={{duration: 0.4}}
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
               >
                 Hi, {user.username}
               </motion.span>
             )}
             <ul className="nav flex-column pt-3">
-              {[
-                "training",
-                "nutrition",
-                "forum",
-                "dashboard",
-                "actions",
-                "fitness-plan",
-                "profile",
-              ].map((route) => (
-                <li className="nav-item" key={route}>
-                  <NavLink
-                    to={`/${route}`}
-                    className={({isActive}) =>
-                      `sidebar-link nav-link ${isActive ? "active" : ""}`
-                    }
-                    onClick={closeSidebar}
-                  >
-                    {route
-                      .replace("-", " ")
-                      .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  </NavLink>
-                </li>
-              ))}
-
-              <li className="nav-item mt-3">
-                <div className="dropdown">
-                  <button
-                    className="btn btn-outline-light dropdown-toggle d-flex align-items-center"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <FaGlobe style={{marginRight: "8px"}} />
-                    {language}
-                  </button>
-
-                  <ul className="dropdown-menu dropdown-menu-dark">
-                    <li>
-                      <button
-                        className={`dropdown-item ${
-                          language === "EN" ? "active" : ""
-                        }`}
-                        onClick={() => handleLanguageChange("EN")}
+              {isLoggedIn
+                ? [
+                    "training",
+                    "nutrition",
+                    "forum",
+                    "dashboard",
+                    "actions",
+                    "fitness-plan",
+                    "profile",
+                  ].map((route) => (
+                    <li className="nav-item" key={route}>
+                      <NavLink
+                        to={`/${route}`}
+                        className={({ isActive }) =>
+                          `sidebar-link nav-link ${isActive ? "active" : ""}`
+                        }
+                        onClick={closeSidebar}
                       >
-                        <FaFlagUsa style={{marginRight: "8px"}} /> EN
-                      </button>
+                        {route
+                          .replace("-", " ")
+                          .replace(/\b\w/g, (l) => l.toUpperCase())}
+                      </NavLink>
                     </li>
-                    <li>
-                      <button
-                        className={`dropdown-item ${
-                          language === "AR" ? "active" : ""
-                        }`}
-                        onClick={() => handleLanguageChange("AR")}
+                  ))
+                : ["training", "nutrition"].map((route) => (
+                    <li className="nav-item" key={route}>
+                      <NavLink
+                        to={`/${route}`}
+                        className={({ isActive }) =>
+                          `sidebar-link nav-link ${isActive ? "active" : ""}`
+                        }
+                        onClick={closeSidebar}
                       >
-                        <FaFlag style={{marginRight: "8px"}} /> AR
-                      </button>
+                        {route.charAt(0).toUpperCase() + route.slice(1)}
+                      </NavLink>
                     </li>
-                  </ul>
-                </div>
-              </li>
+                  ))}
 
               <hr className="bg-secondary my-3" />
 
@@ -339,7 +283,7 @@ const Navbar = () => {
                 <li className="nav-item">
                   <button
                     className="sidebar-link nav-link btn btn-link"
-                    style={{color:"red"}}
+                    style={{ color: "red" }}
                     onClick={logout}
                   >
                     Logout

@@ -1,10 +1,25 @@
 import React, { useState, useEffect, useMemo } from "react";
 import exercisesData from "../data/exercises.json";
-import "../assets/css/trainingStyles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ReactPaginate from "react-paginate";
-import { Modal, Button, Spinner } from "react-bootstrap";
+import {
+  Modal,
+  Button,
+  Spinner,
+  Badge,
+  Card,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
 import { motion } from "framer-motion";
+import {
+  FiSearch,
+  FiFilter,
+  FiX,
+  FiInfo,
+  FiChevronRight,
+} from "react-icons/fi";
+import "../assets/css/trainingStyles.css";
 
 const Training = () => {
   const Motion = motion.div;
@@ -23,7 +38,7 @@ const Training = () => {
     exercisesData.forEach((ex) => {
       ex.targetMuscles.forEach((muscle) => muscles.add(muscle));
     });
-    return ["All", ...Array.from(muscles)];
+    return ["All", ...Array.from(muscles).sort()];
   }, []);
 
   const checkImageExists = (src) =>
@@ -57,7 +72,9 @@ const Training = () => {
 
   const filteredExercises = useMemo(() => {
     return validExercises.filter((ex) => {
-      const matchesSearch = ex.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = ex.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
       const matchesMuscle =
         selectedMuscle === "All" || ex.targetMuscles.includes(selectedMuscle);
       return matchesSearch && matchesMuscle;
@@ -73,140 +90,302 @@ const Training = () => {
 
   const handlePageClick = (data) => setCurrentPage(data.selected);
 
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedMuscle("All");
+  };
+
   return (
-    <div className="container py-4">
-      <h2 className="text-center mb-4 text-success fw-bold">Training Exercises</h2>
-
-      {loading ? (
-        <div className="text-center my-5">
-          <Spinner animation="border" variant="success" />
+    <div className="training-page bg-gray-50">
+      <div className="container py-5">
+        <div className="text-center mb-5" data-aos="fade-up">
+          <span className="badge bg-success bg-opacity-10 text-success mb-3">
+            EXERCISE LIBRARY
+          </span>
+          <h2 className="display-5 fw-bold mb-3">
+            Find Your Perfect <span className="text-success">Workout</span>
+          </h2>
+          <p className="text-muted mx-auto" style={{ maxWidth: "600px" }}>
+            Browse through our eco-conscious exercise collection
+          </p>
         </div>
-      ) : (
-        <>
-          <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
-            <input
-              type="text"
-              className="form-control me-2 mb-2"
-              style={{ maxWidth: "250px" }}
-              placeholder="Search by name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
 
-            <select
-              className="form-select mb-2"
-              style={{ maxWidth: "200px" }}
-              value={selectedMuscle}
-              onChange={(e) => setSelectedMuscle(e.target.value)}
-            >
-              {allTargetMuscles.map((muscle, idx) => (
-                <option key={idx} value={muscle}>
-                  {muscle.replace(/\b\w/g, (c) => c.toUpperCase())}
-                </option>
-              ))}
-            </select>
+        {loading ? (
+          <div className="text-center my-5 py-5">
+            <Spinner animation="border" variant="success" />
+            <p className="mt-2 text-muted">Loading exercises...</p>
           </div>
-
-          <div className="row g-4">
-            {currentExercises.map((exercise) => (
-              <Motion
-                key={exercise.exerciseId}
-                className="col-6 col-md-3"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-                  <img
-                    src={`/sample/${exercise.gifUrl}`}
-                    className="card-img-top"
-                    alt={exercise.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "/sample/placeholder.gif";
-                    }}
+        ) : (
+          <>
+            <div className="row mb-4 g-3 align-items-end" data-aos="fade-up">
+              <div className="col-md-6">
+                <InputGroup className="shadow-sm rounded-pill">
+                  <InputGroup.Text className="bg-white border-end-0 ps-4">
+                    <FiSearch className="text-muted" />
+                  </InputGroup.Text>
+                  <Form.Control
+                    placeholder="Search exercises..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border-start-0 py-3"
                   />
-                  <div className="card-body d-flex flex-column">
-                    <h6 className="card-title text-capitalize fw-semibold text-success">
-                      {exercise.name}
-                    </h6>
-                    <p className="card-text small mb-1">
-                      <strong>Body:</strong> {exercise.bodyParts.join(", ")}
-                    </p>
-                    <p className="card-text small mb-2">
-                      <strong>Muscle:</strong> {exercise.targetMuscles.join(", ")}
-                    </p>
+                  {searchTerm && (
                     <Button
-                      variant="outline-success"
-                      className="mt-auto"
-                      onClick={() => setSelectedExercise(exercise)}
+                      variant="light"
+                      onClick={() => setSearchTerm("")}
+                      className="border-0 bg-transparent pe-4"
                     >
-                      More Details
+                      <FiX />
+                    </Button>
+                  )}
+                </InputGroup>
+              </div>
+
+              <div className="col-md-6">
+                <InputGroup className="shadow-sm rounded-pill">
+                  <InputGroup.Text className="bg-white border-end-0 ps-4">
+                    <FiFilter className="text-muted" />
+                  </InputGroup.Text>
+                  <Form.Select
+                    value={selectedMuscle}
+                    onChange={(e) => setSelectedMuscle(e.target.value)}
+                    className="py-3"
+                  >
+                    {allTargetMuscles.map((muscle, idx) => (
+                      <option key={idx} value={muscle}>
+                        {muscle === "All" ? "All Muscle Groups" : muscle}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </InputGroup>
+              </div>
+
+              {(searchTerm || selectedMuscle !== "All") && (
+                <div className="col-12">
+                  <div className="d-flex align-items-center gap-2">
+                    <small className="text-muted">
+                      Showing {filteredExercises.length} results
+                    </small>
+                    <Button
+                      variant="link"
+                      size="sm"
+                      onClick={clearFilters}
+                      className="text-success text-decoration-none p-0"
+                    >
+                      Clear filters
                     </Button>
                   </div>
                 </div>
-              </Motion>
-            ))}
-          </div>
+              )}
+            </div>
 
-          <ReactPaginate
-            previousLabel={"←"}
-            nextLabel={"→"}
-            breakLabel={"..."}
-            pageCount={totalPages}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={2}
-            onPageChange={handlePageClick}
-            containerClassName={"pagination justify-content-center mt-4 flex-wrap"}
-            pageClassName={"page-item"}
-            pageLinkClassName={"page-link text-success border-success"}
-            previousClassName={"page-item"}
-            previousLinkClassName={"page-link text-success"}
-            nextClassName={"page-item"}
-            nextLinkClassName={"page-link text-success"}
-            activeClassName={"active bg-success text-white rounded-2"}
-          />
-        </>
-      )}
+            {filteredExercises.length === 0 ? (
+              <div className="text-center py-5 my-5" data-aos="fade-up">
+                <img
+                  src="/sample/no-results.svg"
+                  alt="No results"
+                  style={{ width: "150px", opacity: 0.7 }}
+                />
+                <h5 className="mt-3 text-muted">No exercises found</h5>
+                <p className="text-muted mb-4">
+                  Try adjusting your search or filter criteria
+                </p>
+                <Button
+                  variant="outline-success"
+                  onClick={clearFilters}
+                  className="rounded-pill px-4"
+                >
+                  Clear all filters
+                </Button>
+              </div>
+            ) : (
+              <>
+                <div className="row g-4">
+                  {currentExercises.map((exercise, index) => (
+                    <Motion
+                      key={exercise.exerciseId}
+                      className="col-6 col-md-4 col-lg-3"
+                      whileHover={{ scale: 1.05 }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      data-aos="fade-up"
+                      data-aos-delay={index * 50}
+                    >
+                      <Card className="h-100 border-0 shadow-sm rounded-4 overflow-hidden exercise-card">
+                        <div className="exercise-image-container">
+                          <img
+                            src={`/sample/${exercise.gifUrl}`}
+                            className="card-img-top exercise-image"
+                            alt={exercise.name}
+                            loading="lazy"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/sample/placeholder.gif";
+                            }}
+                          />
+                        </div>
+                        <Card.Body className="d-flex flex-column">
+                          <Card.Title className="text-capitalize fw-bold mb-2">
+                            {exercise.name}
+                          </Card.Title>
+                          <div className="mb-3">
+                            {exercise.targetMuscles
+                              .slice(0, 2)
+                              .map((muscle, i) => (
+                                <Badge
+                                  key={i}
+                                  bg="success"
+                                  className="me-1 mb-1 bg-opacity-10 text-success"
+                                >
+                                  {muscle}
+                                </Badge>
+                              ))}
+                            {exercise.targetMuscles.length > 2 && (
+                              <Badge
+                                bg="success"
+                                className="bg-opacity-10 text-success"
+                              >
+                                +{exercise.targetMuscles.length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                          <Button
+                            variant="outline-success"
+                            className="mt-auto align-self-start rounded-pill px-3 d-flex align-items-center hover-effect"
+                            onClick={() => setSelectedExercise(exercise)}
+                          >
+                            View <FiChevronRight className="ms-1" />
+                          </Button>
+                        </Card.Body>
+                      </Card>
+                    </Motion>
+                  ))}
+                </div>
 
-      {selectedExercise && (
+                {totalPages > 1 && (
+                  <ReactPaginate
+                    previousLabel={"←"}
+                    nextLabel={"→"}
+                    breakLabel={"..."}
+                    pageCount={totalPages}
+                    marginPagesDisplayed={1}
+                    pageRangeDisplayed={2}
+                    onPageChange={handlePageClick}
+                    containerClassName="pagination justify-content-center mt-5"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link border-0 rounded-circle mx-1"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link border-0 rounded-circle mx-1"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link border-0 rounded-circle mx-1"
+                    breakClassName="page-item"
+                    breakLinkClassName="page-link border-0 rounded-circle mx-1"
+                    activeClassName="active"
+                    activeLinkClassName="bg-success border-success"
+                    disabledClassName="disabled"
+                  />
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        {/* Modal */}
         <Modal
-          show={true}
+          show={!!selectedExercise}
           onHide={() => setSelectedExercise(null)}
           backdrop="static"
           centered
+          size="lg"
+          className="exercise-modal"
         >
-          <Modal.Header closeButton className="border-0">
-            <Modal.Title className="text-success fw-bold">
-              {selectedExercise.name.charAt(0).toUpperCase() +
-                selectedExercise.name.slice(1)}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <motion.img
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              src={`/sample/${selectedExercise.gifUrl}`}
-              alt={selectedExercise.name}
-              style={{ width: "100%", borderRadius: "12px", marginBottom: "1rem" }}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = "/sample/placeholder.gif";
-              }}
-            />
-            <p><strong>Body Part:</strong> {selectedExercise.bodyParts.join(", ")}</p>
-            <p><strong>Target Muscles:</strong> {selectedExercise.targetMuscles.join(", ")}</p>
-            <p><strong>Equipment:</strong> {selectedExercise.equipments.join(", ")}</p>
-            <p><strong>Secondary Muscles:</strong> {selectedExercise.secondaryMuscles?.join(", ") || "N/A"}</p>
-            <p><strong>Instructions:</strong></p>
-            <div>
-              {selectedExercise.instructions?.map((step, i) => (
-                <p key={i}>{step}</p>
-              ))}
-            </div>
-          </Modal.Body>
+          {selectedExercise && (
+            <>
+              <Modal.Header closeButton className="border-0 pb-0">
+                <Modal.Title className="fw-bold text-capitalize">
+                  {selectedExercise.name}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="pt-0">
+                <div className="row">
+                  <div className="col-md-6 mb-3 mb-md-0">
+                    <motion.img
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      src={`/sample/${selectedExercise.gifUrl}`}
+                      alt={selectedExercise.name}
+                      className="img-fluid rounded-3 shadow-sm"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "/sample/placeholder.gif";
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-4">
+                      <h6 className="fw-bold d-flex align-items-center text-success mb-3">
+                        <FiInfo className="me-2" />
+                        Exercise Details
+                      </h6>
+                      <ul className="list-unstyled small">
+                        <li className="mb-2">
+                          <strong>Body Part:</strong>{" "}
+                          <span className="text-muted">
+                            {selectedExercise.bodyParts.join(", ")}
+                          </span>
+                        </li>
+                        <li className="mb-2">
+                          <strong>Target Muscles:</strong>{" "}
+                          <span className="text-muted">
+                            {selectedExercise.targetMuscles.join(", ")}
+                          </span>
+                        </li>
+                        <li className="mb-2">
+                          <strong>Secondary Muscles:</strong>{" "}
+                          <span className="text-muted">
+                            {selectedExercise.secondaryMuscles?.join(", ") ||
+                              "None"}
+                          </span>
+                        </li>
+                        <li className="mb-2">
+                          <strong>Equipment:</strong>{" "}
+                          <span className="text-muted">
+                            {selectedExercise.equipments.join(", ") || "None"}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h6 className="fw-bold d-flex align-items-center text-success mb-3">
+                        Instructions
+                      </h6>
+                      <ol className="ps-3 small">
+                        {selectedExercise.instructions?.map((step, i) => (
+                          <li key={i} className="mb-2">
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </Modal.Body>
+              <Modal.Footer className="border-0">
+                <Button
+                  variant="success"
+                  onClick={() => setSelectedExercise(null)}
+                  className="rounded-pill px-4"
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
+            </>
+          )}
         </Modal>
-      )}
+      </div>
     </div>
   );
 };
