@@ -105,12 +105,12 @@ const Home = () => {
                   getting fit.
                 </p>
                 <div className="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-center">
-                  <button className="btn btn-light btn-lg rounded-pill px-4 py-3 fw-medium text-success shadow-sm hover-effect">
+                  {/* <button className="btn btn-light btn-lg rounded-pill px-4 py-3 fw-medium text-success shadow-sm hover-effect">
                     Get Started
                     <i className="bi bi-arrow-right ms-2 transition-all"></i>
-                  </button>
+                  </button> */}
                 </div>
-                <div className="d-flex align-items-center gap-4 mt-4 justify-content-center justify-content-lg-start">
+                <div className="d-flex align-items-center gap-4 mt-1 justify-content-center justify-content-lg-start">
                   <div className="d-flex">
                     {[1, 2, 3].map((item) => (
                       <div
@@ -239,9 +239,9 @@ const Home = () => {
                 </h2>
               </div>
               <div className="col-md-4 text-md-end" data-aos="fade-left">
-                <button className="btn btn-outline-success rounded-pill px-4">
+                {/* <button className="btn btn-outline-success rounded-pill px-4">
                   View All <i className="bi bi-arrow-right ms-1"></i>
-                </button>
+                </button> */}
               </div>
             </div>
 
@@ -264,12 +264,12 @@ const Home = () => {
                         className="img-fluid w-100 h-100 object-fit-cover transition-all"
                       />
                       <div className="position-absolute top-0 end-0 m-3">
-                        <button
+                        {/* <button
                           className="btn btn-sm btn-light rounded-circle shadow-sm"
                           style={{ width: "36px", height: "36px" }}
                         >
                           <i className="bi bi-bookmark"></i>
-                        </button>
+                        </button> */}
                       </div>
                       <div className="position-absolute bottom-0 start-0 w-100 p-3 bg-dark bg-opacity-50 text-white">
                         <div className="d-flex justify-content-between align-items-center">
@@ -292,9 +292,9 @@ const Home = () => {
                           <i className="bi bi-fire me-1"></i>
                           {workout.calories}
                         </span>
-                        <button className="btn btn-sm btn-success rounded-pill px-3">
+                        {/* <button className="btn btn-sm btn-success rounded-pill px-3">
                           Start <i className="bi bi-arrow-right ms-1"></i>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
@@ -370,10 +370,10 @@ const Home = () => {
                             </p>
                           </div>
                           <div className="flex-shrink-0">
-                            <button className="btn btn-sm btn-outline-success rounded-pill">
+                            {/* <button className="btn btn-sm btn-outline-success rounded-pill">
                               <i className="bi bi-play-fill me-1"></i> Watch
                               Story
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                       </div>
@@ -386,7 +386,7 @@ const Home = () => {
         </section>
 
         {/* CTA Section */}
-        <section className="py-5 bg-success text-white">
+        {/* <section className="py-5 bg-success text-white">
           <div className="container py-5">
             <div className="row justify-content-center">
               <div className="col-lg-8 text-center" data-aos="zoom-in">
@@ -411,7 +411,7 @@ const Home = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </>
   );
