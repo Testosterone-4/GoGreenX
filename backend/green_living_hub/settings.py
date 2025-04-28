@@ -73,6 +73,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # React dev server
 ]
 
+WSGI_APPLICATION = 'green_living_hub.wsgi.application'
+
+# REST Framework
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
