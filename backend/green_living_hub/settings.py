@@ -73,8 +73,9 @@ WSGI_APPLICATION = 'green_living_hub.wsgi.application'
 # Database
 DATABASES = {
     'default': dj_database_url.config(
-        default=os.environ['DATABASE_URL'],
+        default=os.getenv('DATABASE_URL'),
         conn_max_age=600,
+        conn_health_checks=True,
         ssl_require=True
     )
 }
