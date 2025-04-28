@@ -24,9 +24,12 @@ import React, { useState} from 'react';
 import MyNavbar from './components/MyNavbar/MyNavbar';
 import HomePage from './pages/HomePage';
 import {Groups} from './pages/Groups';
+//import NotificationsPage from './pages/Notifications'
+import ProfilePage from './pages/ProfilePage';
+//import { NotificationProvider } from './contexts/NotificationContext';
 
-import MyPosts from './pages/MyPosts'
-
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 
 
@@ -35,9 +38,11 @@ import MyPosts from './pages/MyPosts'
 
 function App() {
   const location = useLocation();
-    const [activeTab, setActiveTab] = useState('home');
-    const [user, setUser] = useState(null);
-
+  const [activeTab, setActiveTab] = useState("home");
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    AOS.init({ once: true });
+  }, []);
   const renderContent = () => {
     switch (activeTab) {
       case 'home': return <HomePage user={user} setUser={setUser}/>;

@@ -8,12 +8,25 @@ body:not(.no-navbar-padding) .hero-section {
 
 @media (max-width: 768px) {
   body:not(.no-navbar-padding) {
-      padding-top: 100px;
+    padding-top: 100px;
   }
 
   body:not(.no-navbar-padding) .hero-section {
-      padding-top: 0 !important;
+    padding-top: 0 !important;
   }
+}
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.main {
+  flex: 1;
 }
 .footer-link {
   color: #adb5bd;
@@ -39,11 +52,14 @@ body:not(.no-navbar-padding) .hero-section {
     padding-bottom: 1rem !important;
   }
 
-  footer h4, footer h6 {
+  footer h4,
+  footer h6 {
     font-size: 1rem;
   }
 
-  footer p, footer a, footer li {
+  footer p,
+  footer a,
+  footer li {
     font-size: 0.85rem;
   }
 
