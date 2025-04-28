@@ -75,7 +75,7 @@ def notify_user_about_new_badge(sender, instance, created, **kwargs):
         )
 @receiver(post_save, sender=User)
 def create_user_points(sender, instance, created, **kwargs):
-    """Create UserPoints automatically when a new user is created"""
+
     if created:
         UserPoints.objects.create(user=instance)
 
