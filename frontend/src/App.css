@@ -1,42 +1,77 @@
+body:not(.no-navbar-padding) {
+  padding-top: 80px;
+}
+
+body:not(.no-navbar-padding) .hero-section {
+  padding-top: 0 !important;
+}
+
+@media (max-width: 768px) {
+  body:not(.no-navbar-padding) {
+    padding-top: 100px;
+  }
+
+  body:not(.no-navbar-padding) .hero-section {
+    padding-top: 0 !important;
+  }
+}
+html,
+body {
+  height: 100%;
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.main {
+  flex: 1;
+}
+.footer-link {
+  color: #adb5bd;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.hover-opacity {
+  transition: opacity 0.3s ease;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.hover-opacity:hover {
+  opacity: 0.7;
 }
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
+/* Base styles already applied from before */
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@media (max-width: 768px) {
+  footer {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
   }
-  to {
-    transform: rotate(360deg);
+
+  footer h4,
+  footer h6 {
+    font-size: 1rem;
   }
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+  footer p,
+  footer a,
+  footer li {
+    font-size: 0.85rem;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  footer img {
+    height: 35px !important;
+  }
 
-.read-the-docs {
-  color: #888;
+  .footer-link {
+    font-size: 0.85rem;
+  }
+
+  .hover-opacity svg {
+    font-size: 1rem;
+  }
 }

@@ -1,0 +1,90 @@
+/* Base Styles */
+.homepage-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  margin-left: 250px; /* Sidebar width + margin */
+  padding-top: 200px; /* Space for navbar + hero */
+
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem 2rem 2rem;
+}
+
+.content-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.posts-column {
+  max-width: 700px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Cards */
+.create-post-card,
+.post-card,
+.empty-posts-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.create-post-card {
+  padding: 1.5rem;
+}
+
+.empty-posts-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.empty-message {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+.create-post-btn {
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .homepage-container {
+    margin-left: 300px;
+  }
+
+  .main-content {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .homepage-container {
+    margin-left: 0;
+    padding-top: 190px;
+  }
+
+  .main-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1.25rem;
+  }
+
+  .homepage-container {
+    padding-top: 180px;
+  }
+}

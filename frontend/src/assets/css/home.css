@@ -1,0 +1,160 @@
+:root {
+  --dark-bg: #f3fdf6;
+  --dark-bg-lighter: #eaf7e3;
+  --primary-green: #28a745;
+  --light-green: #34d058;
+  --dark-green: #216e39;
+  --text-light: #1a1a1a;
+  --text-muted: #6c757d;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --gradient-overlay: linear-gradient(120deg, #f3fdf6, #eaf7e3);
+  --border-radius: 10px;
+  --transition-speed: 0.3s;
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: var(--dark-bg);
+  color: var(--text-light);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+}
+
+/* Text Colors */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+.text-success {
+  color: var(--primary-green) !important;
+}
+
+.text-emerald-300 {
+  color: #6ee7b7;
+}
+
+.text-emerald-500 {
+  color: #10b981;
+}
+
+/* Background Colors */
+.bg-white {
+  background: white !important;
+}
+
+.bg-light {
+  background: var(--dark-bg-lighter) !important;
+}
+
+.bg-emerald-50 {
+  background-color: #ecfdf5;
+}
+
+.bg-emerald-100 {
+  background-color: #d1fae5;
+}
+
+.bg-success.bg-opacity-10 {
+  background: rgba(40, 167, 69, 0.1) !important;
+}
+
+/* Hero Section */
+.hero-section {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 102, 35, 0.9) 0%,
+    rgba(5, 46, 22, 0.95) 100%
+  );
+  background-image: url("https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1470&q=80");
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+}
+
+.hero-overlay {
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(11, 102, 35, 0.3) 0%,
+    rgba(5, 46, 22, 0.7) 100%
+  );
+}
+
+/* Buttons */
+.btn-success {
+  background-color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.btn-success:hover {
+  background-color: var(--light-green);
+  border-color: var(--light-green);
+}
+
+.btn-outline-success {
+  color: var(--primary-green);
+  border-color: var(--primary-green);
+}
+
+.btn-outline-success:hover {
+  background-color: var(--primary-green);
+  color: white;
+}
+
+/* Cards */
+.card {
+  backdrop-filter: blur(8px);
+  background: var(--card-bg);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--border-radius);
+  transition: transform var(--transition-speed) ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Workout Card */
+.workout-card:hover img {
+  transform: scale(1.05);
+}
+
+.workout-card .card-body {
+  transition: all 0.3s ease;
+}
+
+/* Feature Card */
+.feature-card {
+  border-top: 3px solid transparent;
+}
+
+.feature-card:hover {
+  border-top-color: #10b981;
+}
+
+/* Transitions & Hover Effects */
+.transition-all {
+  transition: all var(--transition-speed) ease;
+}
+
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-section {
+    text-align: center;
+  }
+
+  .display-3 {
+    font-size: 2.5rem;
+  }
+}

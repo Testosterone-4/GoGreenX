@@ -1,0 +1,56 @@
+/* General styles for the nutrition page */
+
+/* Pagination styles */
+.pagination .page-link {
+  color: #28a745;
+  border: none;
+  margin: 0 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50% !important;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.pagination .page-link:hover {
+  background-color: #eaf7e3;
+}
+
+/* Modal styles */
+.meal-modal .modal-content {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.meal-modal .modal-header {
+  background-color: #f8f9fa;
+}
+
+.meal-modal .modal-body {
+  padding: 2rem;
+}
+
+/* Hover effect for buttons */
+.hover-effect:hover {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .meal-image-container {
+    height: 150px;
+  }
+
+  .meal-modal .modal-body {
+    padding: 1rem;
+  }
+}
