@@ -81,6 +81,19 @@ const MyNavbar = ({ activeTab, setActiveTab }) => {
               <span>Topics</span>
             </Nav.Link>
           </Nav.Item>
+           <Nav.Item>
+            <Nav.Link
+              active={activeTab === 'my-posts'}
+              onClick={() => {
+                setActiveTab('my-posts');
+                setMobileOpen(false);
+              }}
+              className="nav-item"
+            >
+              <i className="fas fa-bell"></i>
+              <span>My Posts</span>
+            </Nav.Link>
+          </Nav.Item>
           <Nav.Item>
             <Nav.Link
               active={activeTab === 'groups'}
@@ -92,19 +105,6 @@ const MyNavbar = ({ activeTab, setActiveTab }) => {
             >
               <i className="fas fa-users"></i>
               <span>Groups</span>
-            </Nav.Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Nav.Link
-              active={activeTab === 'notifications'}
-              onClick={() => {
-                setActiveTab('notifications');
-                setMobileOpen(false);
-              }}
-              className="nav-item"
-            >
-              <i className="fas fa-bell"></i>
-              <span>Notifications</span>
             </Nav.Link>
           </Nav.Item>
         </Nav>
