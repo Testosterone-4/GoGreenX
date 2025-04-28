@@ -41,15 +41,16 @@ function App() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("home");
   const [user, setUser] = useState(null);
+
   useEffect(() => {
     AOS.init({ once: true });
   }, []);
+
   const renderContent = () => {
     switch (activeTab) {
-      case 'home': return <HomePage user={user} setUser={setUser}/>;
+      case 'home': return <HomePage user={user} setUser={setUser} />;
       case 'groups': return <Groups user={user} />;
-        case 'my-posts': return <MyPosts user={user} setUser={setUser}/>;
-
+      case 'my-posts': return <MyPosts user={user} setUser={setUser} />;
       default: return <HomePage user={user} />;
     }
   };
@@ -62,45 +63,46 @@ function App() {
     }
   }, [location]);
 
+  return (
+    <div className="d-flex flex-column min-vh-100">
+      <Navbar />
+      
+      <main className="flex-grow-1">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/actions" element={<Actions />} />
+          <Route path="/fitness-plan" element={<FitnessPlan />} />
+          <Route path="/nutrition" element={<Nutrition />} />
+          <Route path="/training" element={<Training />} />
+          <Route path="/wearable/connect" element={<WearableConnect />} />
+          <Route path="/wearable/data" element={<WearableData />} />
 
- return (
-  <div className="d-flex flex-column min-vh-100">
-    <Navbar />
-    <main className="flex-grow-1">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/actions" element={<Actions />} />
-        <Route path="/fitness-plan" element={<FitnessPlan />} />
-        <Route path="/nutrition" element={<Nutrition />} />
-        <Route path="/training" element={<Training />} />
-        <Route path="/wearable/connect" element={<WearableConnect />} />
-        <Route path="/wearable/data" element={<WearableData />} />
-
-        {/* Community routes with tab navigation */}
-        <Route
-          path="/community/*"
-          element={
-            <div className="community-container">
-              <MyNavbar
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                user={user}
-              />
-              <div className="community-content">
-                {renderContent()}
+          {/* Community routes with tab navigation */}
+          <Route
+            path="/community/*"
+            element={
+              <div className="community-container">
+                <MyNavbar
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  user={user}
+                />
+                <div className="community-content">
+                  {renderContent()}
+                </div>
               </div>
-            </div>
-          }
-        />
-      </Routes>
-      {!window.location.pathname.startsWith('/community') && <Footer />}
-    </main>
-  </div>
-);
-}
+            }
+          />
+        </Routes>
+      </main>
 
+      {/* Footer should be OUTSIDE the <main> */}
+      {!location.pathname.startsWith('/community') && <Footer />}
+    </div>
+  );
+}
 export default App;

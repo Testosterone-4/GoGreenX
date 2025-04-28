@@ -154,7 +154,7 @@ const Dashboard = () => {
 
         {/* Points Summary */}
         <Row className="mb-4 g-4" data-aos="fade-up">
-          <Col lg={8}>
+          <Col lg={12}>
             <Card className="shadow border-0 h-100">
               <Card.Body className="p-4">
                 <div className="d-flex align-items-center mb-3">
@@ -188,7 +188,7 @@ const Dashboard = () => {
             </Card>
           </Col>
           <Col lg={4}>
-            <Card className="shadow border-0 h-100">
+            {/* <Card className="shadow border-0 h-100">
               <Card.Body className="p-4">
                 <div className="d-flex align-items-center mb-3">
                   <div className="bg-warning bg-opacity-10 p-3 rounded-circle me-3">
@@ -207,7 +207,7 @@ const Dashboard = () => {
                   View Leaderboard <BsArrowUpRight />
                 </Button>
               </Card.Body>
-            </Card>
+            </Card> */}
           </Col>
         </Row>
 
@@ -393,7 +393,7 @@ const Dashboard = () => {
           <Tab eventKey="leaderboard" title="Leaderboard">
             <Card className="shadow border-0">
               <Card.Body>
-                <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="d-flex flex-wrap justify-content-between align-items-center mb-4">
                   <div className="d-flex align-items-center">
                     <div className="bg-primary bg-opacity-10 p-2 rounded-circle me-2">
                       <BsPeopleFill className="text-primary" />

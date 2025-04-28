@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import UserProfile from '../components/UserProfile/UserProfile';
 import { Container, Spinner, Alert } from 'react-bootstrap';
 
+const API_HOST = import.meta.env.VITE_API_HOST;
 const ProfilePage = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -16,7 +17,7 @@ const ProfilePage = () => {
             if (!refreshToken) throw new Error('No refresh token');
             
             const response = await axios.post(
-                'http://localhost:8000/auth/jwt/refresh/',
+                `${API_HOST}/auth/jwt/refresh/`,
                 { refresh: refreshToken }
             );
             
@@ -37,13 +38,14 @@ const ProfilePage = () => {
             if (!token) throw new Error('No access token');
             
             const response = await axios.get(
-                'http://localhost:8000/api/users/users/me/',
+                `${API_HOST}/api/users/users/me/`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 }
             );
+            console.log('Profile data:', response.data);
             
             setUserData(response.data);
             setError(null);
@@ -53,7 +55,7 @@ const ProfilePage = () => {
                 if (newToken) {
                     try {
                         const retryResponse = await axios.get(
-                            'http://localhost:8000/api/users/users/me/',
+                            `${API_HOST}/api/users/users/me/`,
                             {
                                 headers: {
                                     Authorization: `Bearer ${newToken}`
@@ -77,7 +79,7 @@ const ProfilePage = () => {
         try {
             const token = localStorage.getItem('accessToken');
             const response = await axios.patch(
-                'http://localhost:8000/api/users/users/update_profile/',
+                `${API_HOST}/api/users/users/update_profile/`,
                 updatedData,
                 {
                     headers: {

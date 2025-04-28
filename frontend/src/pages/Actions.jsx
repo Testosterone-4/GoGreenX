@@ -461,7 +461,7 @@ const Actions = () => {
                             <div className="d-flex mt-1">
                               <Badge
                                 bg={getCategoryColor(task.category)}
-                                className="me-2 bg-opacity-10"
+                                className="me-2 bg-opacity-5"
                                 text={task.category}
                               >
                                 {task.category}

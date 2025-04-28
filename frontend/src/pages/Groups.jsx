@@ -10,7 +10,7 @@ const API_HOST = import.meta.env.VITE_API_HOST;
 const api = axios.create({
   baseURL: `${API_HOST}`
 });
-
+const Motion = motion.div
 // Add request interceptor to include token in all requests
 api.interceptors.request.use(config => {
   const token = localStorage.getItem('accessToken');
@@ -48,24 +48,24 @@ const ApiService = {
 const styles = {
    container: {
     marginTop: '220px',
-    marginLeft: '80px', // Default left margin - you can adjust this value
+    marginLeft: '20px', // Default left margin - you can adjust this value
     padding: '1rem',
     minHeight: 'calc(100vh - 80px)',
     backgroundColor: '#f8f9fa',
     maxWidth: '1200px', // Narrower max width
     transition: 'margin-left 0.3s ease',
-    '@media (min-width: 992px)': {
+    '@media (minWidth: 992px)': {
       marginLeft: '250px', // When sidebar is open
       maxWidth: '800px'
     },
-    '@media (max-width: 992px)': {
+    '@media (maxWidth: 992px)': {
       marginLeft: '100px', // Keep your left margin when sidebar is closed
       maxWidth: '800px'
     },
-    '@media (max-width: 800px)': {
+    '@media (maxWidth: 800px)': {
       marginLeft: '20px', // Smaller left margin on very small screens
       marginRight: '20px',
-      maxWidth: 'calc(100% - 40px)' // Account for margins
+      maxWidth: 'calc(100% - 20px)' // Account for margins
     }
   },
   card: {
@@ -97,7 +97,7 @@ const styles = {
     height: '45px',
     objectFit: 'cover',
     borderRadius: '50%',
-    '@media (max-width: 576px)': {
+    '@media (maxWidth: 576px)': {
       width: '36px',
       height: '36px'
     }
@@ -313,7 +313,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                     width: '40px',
                     height: '40px',
                     objectFit: 'cover',
-                    '@media (max-width: 576px)': {
+                    '@media (maxWidth: 576px)': {
                       width: '32px',
                       height: '32px'
                     }
@@ -331,7 +331,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                     height: '40px',
                     backgroundColor: '#28a745',
                     color: 'white',
-                    '@media (max-width: 576px)': {
+                    '@media (maxWidth: 576px)': {
                       width: '32px',
                       height: '32px'
                     }
@@ -404,7 +404,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                             width: '35px',
                             height: '35px',
                             objectFit: 'cover',
-                            '@media (max-width: 576px)': {
+                            '@media (maxWidth: 576px)': {
                               width: '30px',
                               height: '30px'
                             }
@@ -422,7 +422,7 @@ const Post = ({ post, currentUser, onLike, onCreateComment, onLoadComments, onLi
                             height: '35px',
                             backgroundColor: '#6c757d',
                             color: 'white',
-                            '@media (max-width: 576px)': {
+                            '@media (maxWidth: 576px)': {
                               width: '30px',
                               height: '30px'
                             }

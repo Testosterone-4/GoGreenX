@@ -1,22 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {NavLink, useNavigate} from "react-router-dom";
 import LoginModal from "../pages/Login";
 import AuthModals from "../pages/Register";
-import { Menu } from "lucide-react";
-import { motion } from "framer-motion";
+import {Menu} from "lucide-react";
+import {motion} from "framer-motion";
 import logo from "../assets/images/gogreenx_logo.png";
 import "../assets/css/navbarStyles.css";
-import { useAuth } from "../contexts/AuthContext";
+import {useAuth} from "../contexts/AuthContext";
 import axios from "axios";
 
 import {FaFlagUsa, FaFlag, FaGlobe} from "react-icons/fa";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const API_HOST = import.meta.env.VITE_API_HOST;
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
 
 const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
@@ -102,12 +101,16 @@ const Navbar = () => {
               <Menu size={22} color="#4CAF50" />
             </button>
 
-            <NavLink className="navbar-brand fw-bold px-3 py-2 rounded" to="/">
+            <NavLink
+              className="navbar-brand fw-bold d-flex align-items-center gap-2 px-3 py-2 rounded"
+              to="/"
+            >
               <img
                 src={logo}
                 alt="logo"
-                style={{ width: "70px", height: "70px" }}
+                style={{width: "70px", height: "70px", objectFit: "cover"}}
               />
+              <span style={{fontSize: "24px"}}>GoGreenX</span>
             </NavLink>
           </div>
 
@@ -120,7 +123,7 @@ const Navbar = () => {
                     <li className="nav-item mx-2" key={route}>
                       <NavLink
                         to={`/${route}`}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           `nav-link ${isActive ? "active" : ""}`
                         }
                       >
@@ -136,7 +139,7 @@ const Navbar = () => {
                       <NavLink
                         key={route}
                         to={`/${route}`}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           `nav-link mx-2 ${isActive ? "active" : ""}`
                         }
                       >
@@ -164,10 +167,10 @@ const Navbar = () => {
                     <motion.span
                       key={index}
                       variants={{
-                        hidden: { opacity: 0, y: -5 },
-                        visible: { opacity: 1, y: 0 },
+                        hidden: {opacity: 0, y: -5},
+                        visible: {opacity: 1, y: 0},
                       }}
-                      transition={{ duration: 0.4 }}
+                      transition={{duration: 0.4}}
                     >
                       {char}
                     </motion.span>
@@ -185,7 +188,7 @@ const Navbar = () => {
                     <li className="nav-item mx-2" key={route}>
                       <NavLink
                         to={`/${route}`}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           `nav-link ${isActive ? "active" : ""}`
                         }
                       >
@@ -217,14 +220,14 @@ const Navbar = () => {
           tabIndex="-1"
           id="sidebarMenu"
           aria-labelledby="sidebarMenuLabel"
-          style={{ height: "100vh" }}
+          style={{height: "100vh"}}
         >
           <div className="offcanvas-header">
             <NavLink className="navbar-brand fw-bold px-3 py-2 rounded" to="/">
               <img
                 src={logo}
                 alt="logo"
-                style={{ width: "70px", height: "70px" }}
+                style={{width: "70px", height: "70px"}}
               />
             </NavLink>
             <button
@@ -238,9 +241,9 @@ const Navbar = () => {
             {isLoggedIn && (
               <motion.span
                 className="navbar-user-greeting mb-3"
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
+                initial={{opacity: 0, y: -5}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.4}}
               >
                 Hi, {user.username}
               </motion.span>
@@ -250,7 +253,7 @@ const Navbar = () => {
                 ? [
                     "training",
                     "nutrition",
-                    "forum",
+                    "community",
                     "dashboard",
                     "actions",
                     "fitness-plan",
@@ -259,7 +262,7 @@ const Navbar = () => {
                     <li className="nav-item" key={route}>
                       <NavLink
                         to={`/${route}`}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           `sidebar-link nav-link ${isActive ? "active" : ""}`
                         }
                         onClick={closeSidebar}
@@ -274,7 +277,7 @@ const Navbar = () => {
                     <li className="nav-item" key={route}>
                       <NavLink
                         to={`/${route}`}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                           `sidebar-link nav-link ${isActive ? "active" : ""}`
                         }
                         onClick={closeSidebar}
@@ -290,7 +293,7 @@ const Navbar = () => {
                 <li className="nav-item">
                   <button
                     className="sidebar-link nav-link btn btn-link"
-                    style={{ color: "red" }}
+                    style={{color: "red"}}
                     onClick={logout}
                   >
                     Logout
