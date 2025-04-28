@@ -27,6 +27,7 @@ import {Groups} from './pages/Groups';
 //import NotificationsPage from './pages/Notifications'
 import ProfilePage from './pages/ProfilePage';
 //import { NotificationProvider } from './contexts/NotificationContext';
+import MyPosts from './pages/MyPosts'
 
 import AOS from "aos";
 import "aos/dist/aos.css";
