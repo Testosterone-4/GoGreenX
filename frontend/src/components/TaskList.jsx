@@ -76,7 +76,7 @@ const TaskList = ({ tasks: initialTasks, onUpdateTask }) => {
         const newToken = await refreshToken();
         if (newToken) {
           try {
-            const response = await axios.patch(``${API_HOST}/api/tasks/list/${taskId}/`, {
+            const response = await axios.patch(`${API_HOST}/api/tasks/list/${taskId}/`, {
               is_completed: !isCompleted,
             }, {
               headers: { Authorization: `Bearer ${newToken}` },

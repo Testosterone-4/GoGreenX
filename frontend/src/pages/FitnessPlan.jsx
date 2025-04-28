@@ -4,13 +4,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import FitnessForm from '../components/FitnessForm';
 import TaskList from '../components/TaskList';
-const API_HOST = import.meta.env.VITE_API_HOST;
-
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import FitnessForm from "../components/FitnessForm";
-import TaskList from "../components/TaskList";
 import "../assets/css/fitnessPlan.css";
 import {
   Container,
@@ -24,6 +17,9 @@ import {
   Pagination,
 } from "react-bootstrap";
 import { BsLightningFill, BsCheckCircle, BsArrowRepeat } from "react-icons/bs";
+
+const API_HOST = import.meta.env.VITE_API_HOST;
+
 
 
 const FitnessPlan = () => {
