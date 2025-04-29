@@ -67,6 +67,8 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
     'content-type',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'green_living_hub.urls'
 
