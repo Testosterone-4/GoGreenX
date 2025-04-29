@@ -50,6 +50,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [os.environ.get('FRONTEND_URL', 'http://localhost:5173')]
+CORS_ALLOW_CREDENTIALS = True
+
 
 ROOT_URLCONF = 'green_living_hub.urls'
 
