@@ -55,7 +55,7 @@ MIDDLEWARE = [
 frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:5173')
 print("💡 FRONTEND_URL loaded:", frontend_url)
 
-CORS_ALLOWED_ORIGINS = [frontend_url]
+CORS_ALLOWED_ORIGINS = [*]
 
 CORS_ALLOW_CREDENTIALS = True
 
