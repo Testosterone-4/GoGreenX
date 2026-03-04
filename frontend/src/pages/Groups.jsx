@@ -613,8 +613,7 @@ export const Groups = () => {
   return (
     <div style={{
       ...styles.container,
-      marginLeft: `{100}px`, // Use the prop value
-      marginLeft: sidebarCollapsed ? `{0}px` : '450px',
+      marginLeft: sidebarCollapsed ? '0px' : '450px',
       padding: window.innerWidth < 768 ? '0.5rem' : '1rem'
     }}>
       <div className="container-fluid">
